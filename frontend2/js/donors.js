@@ -154,7 +154,7 @@ async function handleAddDonor(formData) {
             city: formData.get('city'),
             password: formData.get('password') || 'donor123',
             password_confirm: formData.get('password') || 'donor123',
-            user_type: 'donor'
+            user_type: 'user'
         };
 
         // Use registration endpoint to create donor user
@@ -195,7 +195,7 @@ async function initializeDonorDetail() {
     if (!donorId) {
         // Try to get from current user if they're a donor
         const userData = getUserData();
-        if (userData && userData.user_type === 'donor') {
+        if (userData && userData.donor_status === 'DONOR_APPROVED') {
             // Load logged-in donor's own profile
             await loadDonorProfile(userData.id);
         } else if (userData && (userData.user_type === 'admin' || userData.is_staff || userData.is_superuser)) {

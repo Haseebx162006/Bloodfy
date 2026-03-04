@@ -84,7 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 address: formData.get('address'),
                 password: formData.get('password'),
                 password_confirm: formData.get('password_confirm'),
-                user_type: 'donor' // Public signup is always donor
+                user_type: 'user' // All public signups are standard users; donor profile is created separately
             };
 
             const submitBtn = document.getElementById('registerBtn');

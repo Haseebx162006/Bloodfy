@@ -279,7 +279,7 @@ class AdminDonorCreateSerializer(serializers.ModelSerializer):
             'phone_number': phone_number,
             'password': password,
             'username': email, # Use email as username
-            'user_type': 'donor',
+            'user_type': 'user',
             'donor_status': 'DONOR_APPROVED',
             'donor_status_updated_at': timezone.now()
         }

@@ -34,6 +34,8 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
     last_donation_date = serializers.DateField(required=False, write_only=True)
     blood_group = serializers.CharField(required=False, write_only=True)
     date_of_birth = serializers.DateField(required=False, write_only=True)
+    # Accept any user_type string; create() normalises it to 'user' or 'admin'
+    user_type = serializers.CharField(required=False, default='user')
 
     class Meta:
         model = User

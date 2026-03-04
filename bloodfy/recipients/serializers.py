@@ -43,10 +43,7 @@ class RecipientRegistrationSerializer(serializers.ModelSerializer):
         if hasattr(user, 'recipient_profile'):
             raise serializers.ValidationError("User already has a recipient profile.")
         
-        # Update user type
-        user.user_type = 'recipient'
-        user.save(update_fields=['user_type'])
-        
+        # user_type stays 'user' — role is determined by having a recipient profile
         recipient = Recipient.objects.create(user=user, **validated_data)
         return recipient
 

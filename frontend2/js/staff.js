@@ -343,7 +343,7 @@ function showEditUserModal(user) {
     form.elements['id'].value = user.id;
     form.elements['first_name'].value = user.first_name || '';
     form.elements['last_name'].value = user.last_name || '';
-    form.elements['user_type'].value = user.user_type || 'staff';
+    form.elements['user_type'].value = user.user_type || 'user';
     form.elements['is_active'].value = user.is_active.toString();
 
     modal.style.display = 'flex';

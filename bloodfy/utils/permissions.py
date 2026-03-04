@@ -21,57 +21,62 @@ class IsAdmin(permissions.BasePermission):
 
 class IsDonor(permissions.BasePermission):
     """
-    Permission check for donor users only.
+    Permission check for approved donor users only.
+    user_type is always 'user' for donors; role is tracked via donor_status.
     """
-    message = "Only donors can perform this action."
+    message = "Only approved donors can perform this action."
     
     def has_permission(self, request, view):
         return (
             request.user and 
             request.user.is_authenticated and 
-            request.user.user_type == 'donor'
+            request.user.donor_status == 'DONOR_APPROVED'
         )
 
 
 class IsRecipient(permissions.BasePermission):
     """
-    Permission check for recipient users only.
+    Permission check for recipient users.
+    'recipient' is not a separate user_type — any authenticated user can create blood requests.
     """
-    message = "Only recipients can perform this action."
+    message = "Authentication required."
     
     def has_permission(self, request, view):
         return (
             request.user and 
-            request.user.is_authenticated and 
-            request.user.user_type == 'recipient'
+            request.user.is_authenticated
         )
 
 
 class IsDonorOrAdmin(permissions.BasePermission):
     """
-    Permission check for donor or admin users.
+    Permission check for approved donors or admin users.
+    Donor role is tracked via donor_status, not user_type.
     """
-    message = "Only donors or administrators can perform this action."
+    message = "Only approved donors or administrators can perform this action."
     
     def has_permission(self, request, view):
         return (
             request.user and 
             request.user.is_authenticated and 
-            request.user.user_type in ['donor', 'admin']
+            (
+                request.user.user_type == 'admin' or
+                request.user.donor_status == 'DONOR_APPROVED'
+            )
         )
 
 
 class IsRecipientOrAdmin(permissions.BasePermission):
     """
-    Permission check for recipient or admin users.
+    Permission check for any authenticated user or admin.
+    'recipient' is not a separate user_type — any logged-in user can act as a recipient.
     """
-    message = "Only recipients or administrators can perform this action."
+    message = "Authentication required."
     
     def has_permission(self, request, view):
         return (
             request.user and 
-            request.user.is_authenticated and 
-            request.user.user_type in ['recipient', 'admin']
+            request.user.is_authenticated
         )
 
 
