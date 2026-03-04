@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bloodfy - Admin Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        :root {
+            --primary-red: #E53935;
+            --bg-dark-primary: #121212;
+            --text-primary: #F1F5F9;
+            --text-secondary: #94A3B8;
+            --font-family: 'Poppins', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: var(--font-family);
+        }
+
+        body {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--bg-dark-primary);
+            background-image: radial-gradient(circle at 10% 20%, rgba(229, 57, 53, 0.1) 0%, transparent 20%), radial-gradient(circle at 90% 80%, rgba(229, 57, 53, 0.1) 0%, transparent 20%);
+            color: var(--text-primary);
+            overflow: hidden;
+        }
+
+        .login-card {
+            width: 400px;
+            padding: 40px;
+            background: rgba(30, 30, 30, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-red), #ff5252);
+        }
+
+        .logo-area {
+            margin-bottom: 30px;
+        }
+
+        .logo-area i {
+            font-size: 3rem;
+            color: var(--primary-red);
+            margin-bottom: 10px;
+        }
+
+        .logo-area h2 {
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .logo-area p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px 12px 45px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            color: white;
+            font-family: var(--font-family);
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-red);
+            box-shadow: 0 0 10px rgba(229, 57, 53, 0.2);
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 12px;
+            margin-top: 10px;
+            background: linear-gradient(90deg, #D32F2F, #E53935);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 5px 15px rgba(229, 57, 53, 0.3);
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(229, 57, 53, 0.5);
+        }
+
+        .extra-links {
+            margin-top: 20px;
+            font-size: 0.85rem;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .extra-links a {
+            color: var(--text-secondary);
+            transition: 0.3s;
+        }
+
+        .extra-links a:hover {
+            color: var(--primary-red);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-card">
+        <div class="logo-area">
+            <!-- Logo removed as per user request -->
+        </div>
+        <form id="loginFormElement">
+            <div class="form-group">
+                <label>Email Address</label>
+                <div class="input-wrapper">
+                    <i class="fa-solid fa-envelope"></i>
+                    <input type="email" name="email" class="form-control" placeholder="admin@example.com">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <div class="input-wrapper">
+                    <i class="fa-solid fa-lock"></i>
+                    <input type="password" name="password" class="form-control" placeholder="••••••••">
+                </div>
+            </div>
+            <button type="submit" class="btn-login" id="loginBtn">Sign In <i
+                    class="fa-solid fa-arrow-right"></i></button>
+        </form>
+        <div class="extra-links">
+            <a href="#">Forgot Password?</a>
+            <a href="#">System Support</a>
+        </div>
+    </div>
+
+    <!-- API Configuration -->
+    <script src="../config/api-config.js"></script>
+
+    <!-- Main Integration Script -->
+    <script src="../js/main.js"></script>
+
+    <!-- Authentication Script -->
+    <script src="../js/auth.js"></script>
+
+</body>
+
+</html>

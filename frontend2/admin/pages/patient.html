@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bloodfy Admin - Patients</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        :root {
+            --primary-red: #c62828;
+            --primary-red-dark: #b71c1c;
+            --bg-dark-primary: #121212;
+            /* Main background */
+            --glass-bg: rgba(25, 25, 25, 0.7);
+            /* Dark glass */
+            --glass-border: rgba(255, 255, 255, 0.15);
+            --text-primary: #F1F5F9;
+            --text-secondary: #94A3B8;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            --font-family: 'Poppins', sans-serif;
+            --sidebar-width: 260px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: var(--font-family);
+        }
+
+        body {
+            display: flex;
+            background-color: var(--bg-dark-primary);
+            color: var(--text-primary);
+            overflow-x: hidden;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+        }
+
+        /* --- Sidebar (Glassmorphism) --- */
+
+        .sidebar {
+            width: var(--sidebar-width);
+            height: 100vh;
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            border-right: 1px solid var(--glass-border);
+            display: flex;
+            flex-direction: column;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            gap: 15px;
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--primary-red);
+        }
+
+        .sidebar-header .logo {
+            height: 45px;
+            width: 45px;
+            border-radius: 50%;
+            border: 2px solid var(--primary-red);
+        }
+
+        .sidebar-nav {
+            flex-grow: 1;
+            padding: 15px 0;
+        }
+
+        .sidebar-nav ul li a {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-weight: 500;
+            font-size: 1rem;
+            padding: 16px 30px;
+            margin: 6px 15px;
+            border-radius: 10px;
+            color: var(--text-secondary);
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-nav ul li a i {
+            font-size: 1.2rem;
+            width: 24px;
+            text-align: center;
+        }
+
+        .sidebar-nav ul li a:hover {
+            background-color: var(--primary-red);
+            color: var(--text-primary);
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(198, 40, 40, 0.3);
+        }
+
+        .sidebar-nav ul li.active a {
+            background-color: var(--primary-red);
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .sidebar-footer {
+            padding: 30px;
+            border-top: 1px solid var(--glass-border);
+        }
+
+        .sidebar-footer a {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 1rem;
+            color: var(--text-secondary);
+            transition: color 0.3s ease;
+        }
+
+        .sidebar-footer a:hover {
+            color: var(--primary-red);
+        }
+
+        /* --- Main Content --- */
+
+        .main-content {
+            flex-grow: 1;
+            width: calc(100% - var(--sidebar-width));
+        }
+
+        /* --- Header (Glassmorphism) --- */
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px 40px;
+            background: rgba(18, 18, 18, 0.8);
+            /* Slightly different glass */
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--glass-border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header h2 {
+            font-weight: 600;
+            font-size: 1.5rem;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+
+        /* "END LEVEL" GLOW SEARCH BAR */
+
+        .search-bar {
+            position: relative;
+        }
+
+        .search-bar i {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+        }
+
+        .search-bar input {
+            width: 350px;
+            padding: 13px 20px 13px 50px;
+            background: rgba(0, 0, 0, 0.25);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .search-bar input:focus {
+            outline: none;
+            background: rgba(0, 0, 0, 0.3);
+            border-color: var(--primary-red);
+            box-shadow: 0 0 15px rgba(198, 40, 40, 0.5), 0 0 0 1px var(--primary-red);
+        }
+
+        .search-bar input:focus~i {
+            color: var(--primary-red);
+        }
+
+        .admin-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+        }
+
+        .admin-profile img {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--glass-border);
+        }
+
+        .admin-profile span {
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        /* ========================================
+         NEW CSS FOR PATIENTS & REQUESTS PAGE
+        ========================================
+        */
+
+        .patients-main {
+            padding: 40px;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .page-header h2 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        /* "END LEVEL" SHINE BUTTON (from login page) */
+
+        .btn-primary-shine {
+            padding: 12px 24px;
+            background: linear-gradient(90deg, var(--primary-red), var(--primary-red-dark));
+            color: var(--text-light);
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.2s ease, box-shadow 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-primary-shine:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(198, 40, 40, 0.4);
+        }
+
+        .btn-primary-shine::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.4) 50%, rgba(255, 255, 255, 0) 100%);
+            transform: rotate(25deg) translateX(-150%);
+            transition: transform 0.7s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+        .btn-primary-shine:hover::after {
+            transform: rotate(25deg) translateX(150%);
+        }
+
+        /* Stats Cards (Re-using dashboard style) */
+
+        .stats-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: var(--glass-bg);
+            padding: 25px;
+            border-radius: 16px;
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-icon {
+            font-size: 1.8rem;
+            padding: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* New colors for this page */
+
+        .card:nth-child(1) .card-icon {
+            background: #673AB730;
+            color: #673AB7;
+        }
+
+        .card:nth-child(2) .card-icon {
+            background: #FF525230;
+            color: #FF5252;
+        }
+
+        .card:nth-child(3) .card-icon {
+            background: #00C85330;
+            color: #00C853;
+        }
+
+        .card-info h3 {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .card-info span {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+        }
+
+        /* "END LEVEL" CUSTOM TABLE */
+
+        .widget {
+            background: var(--glass-bg);
+            border-radius: 16px;
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--shadow);
+            padding: 30px;
+            overflow: hidden;
+        }
+
+        .widget-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .widget-header h3 {
+            font-weight: 600;
+            font-size: 1.25rem;
+            color: var(--text-primary);
+        }
+
+        .table-container {
+            width: 100%;
+        }
+
+        .table-header {
+            display: grid;
+            grid-template-columns: 2fr 1fr 2fr 1.5fr 1.5fr;
+            gap: 15px;
+            padding: 0 20px 15px;
+            border-bottom: 1px solid var(--glass-border);
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+        }
+
+        .table-body {
+            /* For potential scrolling if list is long */
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .table-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr 2fr 1.5fr 1.5fr;
+            gap: 15px;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 1px solid var(--glass-border);
+            transition: background-color 0.3s ease;
+        }
+
+        .table-row:last-child {
+            border-bottom: none;
+        }
+
+        .table-row:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .table-row .patient-name {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .blood-type-tag {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            background-color: rgba(198, 40, 40, 0.2);
+            color: var(--primary-red);
+            text-align: center;
+            width: fit-content;
+        }
+
+        .status-tag {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: 500;
+            font-size: 0.85rem;
+            width: fit-content;
+            text-transform: capitalize;
+        }
+
+        .status-pending {
+            background: #FFAB0030;
+            color: #FFAB00;
+        }
+
+        .status-progress {
+            background: #2962FF30;
+            color: #2962FF;
+        }
+
+        .status-completed {
+            background: #00C85330;
+            color: #00C853;
+        }
+
+        .table-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-table {
+            padding: 8px 12px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--glass-border);
+            color: var(--text-secondary);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .btn-table:hover {
+            background: var(--primary-red);
+            color: var(--text-primary);
+            border-color: var(--primary-red);
+        }
+
+        .btn-table.details {
+            background: rgba(41, 98, 255, 0.15);
+            color: #5383FF;
+            border-color: rgba(41, 98, 255, 0.3);
+        }
+
+        .btn-table.details:hover {
+            background: #2962FF;
+            color: var(--text-primary);
+            border-color: #2962FF;
+        }
+    </style>
+</head>
+
+<body>
+
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <!-- Logo removed as per user request -->
+        </div>
+        <nav class="sidebar-nav">
+            <ul>
+                <li><a href="dashboard.html"><i class="fa-solid fa-table-columns"></i> Dashboard</a></li>
+                <li><a href="donor.html"><i class="fa-solid fa-users"></i> Donors</a></li>
+                <li class="active"><a href="patient.html"><i class="fa-solid fa-procedures"></i> Blood Requests</a></li>
+                <li><a href="bloodstock.html"><i class="fa-solid fa-vials"></i> Blood Stock</a></li>
+                <li><a href="staff.html"><i class="fa-solid fa-user-tie"></i> Staff</a></li>
+                <li><a href="analytics.html"><i class="fa-solid fa-chart-line"></i> Analytics</a></li>
+                <li><a href="emergency.html"><i class="fa-solid fa-bolt"></i> Emergency</a></li>
+                <li><a href="chatbot.html"><i class="fa-solid fa-robot"></i> Chatbot</a></li>
+                <li><a href="notifications.html"><i class="fa-solid fa-bell"></i> Notifications</a></li>
+                <li><a href="settings.html"><i class="fa-solid fa-gear"></i> Settings</a></li>
+            </ul>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="#" data-action="logout"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+        </div>
+    </aside>
+
+    <div class="main-content">
+
+        <header class="header">
+            <h2>Patients & Requests</h2>
+            <div class="header-actions">
+                <div class="search-bar">
+                    <input type="text" placeholder="Search patients, requests...">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </div>
+                <div class="admin-profile">
+                    <span id="headerUserName">A. Hameed</span>
+                    <i class="fa-solid fa-chevron-down"></i>
+                </div>
+            </div>
+        </header>
+
+        <main class="patients-main">
+
+            <section class="page-header">
+                <h2>Active Requests Overview</h2>
+                <button id="btnAddRequest" class="btn-primary-shine">
+                    <i class="fa-solid fa-plus"></i>
+                    Add New Request
+                </button>
+            </section>
+
+            <section class="stats-cards">
+                <div class="card">
+                    <div class="card-icon"><i class="fa-solid fa-users"></i></div>
+                    <div class="card-info">
+                        <h3 id="statTotalPatients"><i class="fa-solid fa-spinner fa-spin"></i></h3>
+                        <span>Total Patients</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-icon"><i class="fa-solid fa-clock"></i></div>
+                    <div class="card-info">
+                        <h3 id="statActiveRequests"><i class="fa-solid fa-spinner fa-spin"></i></h3>
+                        <span>Active Requests</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-icon"><i class="fa-solid fa-check-circle"></i></div>
+                    <div class="card-info">
+                        <h3 id="statFulfilledRequests"><i class="fa-solid fa-spinner fa-spin"></i></h3>
+                        <span>Requests Fulfilled</span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="widget">
+                <div class="widget-header">
+                    <h3>All Patient Requests</h3>
+                </div>
+
+                <div class="table-container">
+                    <div class="table-header">
+                        <div>Patient Name</div>
+                        <div>Blood Type</div>
+                        <div>Location</div>
+                        <div>Status</div>
+                        <div>Actions</div>
+                    </div>
+
+                    <div class="table-body" id="requestsTableBody">
+                        <!-- Loading state -->
+                        <div class="table-row" id="loadingRow" style="justify-content: center; text-align: center;">
+                            <div style="grid-column: 1 / -1; padding: 40px; color: var(--text-secondary);">
+                                <i class="fa-solid fa-spinner fa-spin"
+                                    style="font-size: 1.5rem; margin-right: 10px;"></i>
+                                Loading requests...
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- API Configuration -->
+    <script src="../../config/api-config.js"></script>
+
+    <!-- Main Integration Script -->
+    <script src="../../js/main.js"></script>
+
+    <!-- Patient/Requests Management Script -->
+    <script src="../../js/patients.js"></script>
+
+</body>
+
+</html>

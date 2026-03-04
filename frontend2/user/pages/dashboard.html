@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bloodify - My Dashboard</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        :root {
+            --primary-red: #E53935;
+            --primary-red-dark: #C62828;
+            --bg-dark-primary: #181A1E;
+            --bg-dark-secondary: #1F2229;
+            --text-primary: #F1F5F9;
+            --text-secondary: #94A3B8;
+            --border-color: #333944;
+            --success-green: #4CAF50;
+            --warning-yellow: #FF9800;
+            --font-family: 'Poppins', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: var(--font-family);
+        }
+
+        body {
+            min-height: 100vh;
+            background-color: var(--bg-dark-primary);
+            color: var(--text-primary);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        body.loaded {
+            opacity: 1;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+            background: rgba(31, 34, 41, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-red);
+        }
+
+        .logo i {
+            font-size: 1.8rem;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: var(--primary-red);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1rem;
+            color: white;
+            border: 2px solid var(--border-color);
+        }
+
+        .user-details {
+            text-align: right;
+        }
+
+        .user-name {
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .user-type {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            text-transform: capitalize;
+        }
+
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: rgba(229, 57, 53, 0.2);
+            border: 2px solid var(--primary-red);
+            border-radius: 25px;
+            color: var(--primary-red);
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: var(--primary-red);
+            color: white;
+            transform: scale(1.05);
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .welcome-section {
+            margin-bottom: 40px;
+        }
+
+        .welcome-section h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .welcome-section p {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: var(--bg-dark-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 25px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .stat-icon.blood {
+            background: rgba(229, 57, 53, 0.2);
+            color: var(--primary-red);
+        }
+
+        .stat-icon.donations {
+            background: rgba(76, 175, 80, 0.2);
+            color: var(--success-green);
+        }
+
+        .stat-icon.status {
+            background: rgba(255, 152, 0, 0.2);
+            color: var(--warning-yellow);
+        }
+
+        .stat-icon.requests {
+            background: rgba(33, 150, 243, 0.2);
+            color: #2196F3;
+        }
+
+        .stat-info h3 {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .stat-info span {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Action Cards Grid */
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .action-card {
+            background: var(--bg-dark-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 30px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .action-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border-color: var(--primary-red);
+        }
+
+        .action-card h3 {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.2rem;
+            margin-bottom: 12px;
+        }
+
+        .action-card h3 i {
+            color: var(--primary-red);
+            font-size: 1.4rem;
+        }
+
+        .action-card p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        /* Quick Info Section */
+        .info-section {
+            background: var(--bg-dark-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 40px;
+        }
+
+        .info-section h2 {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .info-section h2 i {
+            color: var(--primary-red);
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .info-item {
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+        }
+
+        .info-item label {
+            display: block;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-item span {
+            font-size: 1rem;
+            font-weight: 600;
+            display: block;
+            word-break: break-all;
+            overflow-wrap: anywhere;
+        }
+
+        .blood-group-badge {
+            display: inline-block;
+            background: var(--primary-red);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 30px;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .footer a {
+            color: var(--primary-red);
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header {
+                padding: 15px 20px;
+                flex-wrap: wrap;
+                gap: 15px;
+            }
+
+            .main-content {
+                padding: 20px;
+            }
+
+            .welcome-section h1 {
+                font-size: 1.5rem;
+            }
+
+            .user-details {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="logo">
+            <!-- Logo icon/text removed as per user request -->
+        </div>
+        <div class="header-actions">
+            <a href="requests.html"
+                style="color: var(--text-secondary); font-size: 0.9rem; font-weight: 500; display: flex; align-items: center; gap: 8px; text-decoration: none;">
+                <i class="fa-solid fa-hand-holding-medical"></i> My Requests
+            </a>
+            <div class="user-info">
+                <div class="user-avatar" id="userAvatar">U</div>
+                <div class="user-details">
+                    <div class="user-name" id="userName">User</div>
+                    <div class="user-type" id="userType">Donor</div>
+                </div>
+            </div>
+            <button class="logout-btn" data-action="logout">
+                <i class="fa-solid fa-right-from-bracket"></i> Logout
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Welcome Section -->
+        <section class="welcome-section">
+            <h1>Welcome back, <span id="welcomeName">User</span>!</h1>
+            <p>Thank you for being a lifesaver. Your contributions help save lives every day.</p>
+        </section>
+
+        <!-- Stats Cards -->
+        <section class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon blood">
+                    <i class="fa-solid fa-droplet"></i>
+                </div>
+                <div class="stat-info">
+                    <h3 id="userBloodGroup">--</h3>
+                    <span>Blood Group</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon donations">
+                    <i class="fa-solid fa-heart"></i>
+                </div>
+                <div class="stat-info">
+                    <h3 id="totalDonations">0</h3>
+                    <span>Total Donations</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon status">
+                    <i class="fa-solid fa-circle-check"></i>
+                </div>
+                <div class="stat-info">
+                    <h3 id="eligibilityStatus">Checking...</h3>
+                    <span>Eligibility Status</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon requests">
+                    <i class="fa-solid fa-bell"></i>
+                </div>
+                <div class="stat-info">
+                    <h3 id="pendingRequests">0</h3>
+                    <span>Matching Requests</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Action Cards -->
+        <section class="actions-grid">
+            <a href="chatbot.html" class="action-card">
+                <h3><i class="fa-solid fa-robot"></i> AI Health Assistant</h3>
+                <p>Chat with our AI assistant about blood donation, eligibility, and health tips.</p>
+            </a>
+            <a href="emergency.html" class="action-card">
+                <h3><i class="fa-solid fa-bolt"></i> Emergency Requests</h3>
+                <p>View urgent blood requests in your area and respond to save lives.</p>
+            </a>
+            <a href="notifications.html" class="action-card">
+                <h3><i class="fa-solid fa-bell"></i> My Notifications</h3>
+                <p>Check your notifications for blood request matches and updates.</p>
+            </a>
+            <a href="available-donors.html" class="action-card">
+                <h3><i class="fa-solid fa-users"></i> Available Donors</h3>
+                <p>Browse the list of verified blood donors in your community.</p>
+            </a>
+            <a href="requests.html" class="action-card">
+                <h3><i class="fa-solid fa-hand-holding-medical"></i> My Blood Requests</h3>
+                <p>Track your submitted blood requests and see their current status.</p>
+            </a>
+            <a href="settings.html" class="action-card">
+                <h3><i class="fa-solid fa-user-gear"></i> Profile Settings</h3>
+                <p>Update your profile, contact information, and availability status.</p>
+            </a>
+        </section>
+
+        <!-- User Info Section -->
+        <section class="info-section">
+            <h2><i class="fa-solid fa-id-card"></i> My Profile</h2>
+            <div class="info-grid">
+                <div class="info-item">
+                    <label>Full Name</label>
+                    <span id="profileName">--</span>
+                </div>
+                <div class="info-item">
+                    <label>Email</label>
+                    <span id="profileEmail">--</span>
+                </div>
+                <div class="info-item">
+                    <label>Phone</label>
+                    <span id="profilePhone">--</span>
+                </div>
+                <div class="info-item">
+                    <label>Blood Group</label>
+                    <span class="blood-group-badge" id="profileBloodGroup">--</span>
+                </div>
+                <div class="info-item">
+                    <label>City</label>
+                    <span id="profileCity">--</span>
+                </div>
+                <div class="info-item">
+                    <label>Member Since</label>
+                    <span id="profileMemberSince">--</span>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <i class="fa-solid fa-heart" style="color: var(--primary-red);"></i>
+        Save Lives, Donate Blood |
+        <a href="mailto:support@bloodify.com">Contact Support</a> |
+        <a href="../../auth/user-login.html">Home</a>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="../../config/api-config.js"></script>
+    <script src="../../js/main.js"></script>
+    <script>
+        // Initialize user dashboard
+        document.addEventListener('DOMContentLoaded', () => {
+            refreshUserData();
+        });
+
+        async function refreshUserData() {
+            try {
+                // Show loading state for stats
+                document.getElementById('eligibilityStatus').textContent = 'Refreshing...';
+                document.getElementById('pendingRequests').textContent = 'Loading...';
+
+                // Fetch latest profile from backend
+                const response = await API.users.getProfile();
+
+                if (response.success) {
+                    // Update local storage with fresh data
+                    setUserData(response.data);
+
+                    // Update UI with fresh data
+                    loadUserData(response.data);
+                } else {
+                    // Fallback to local data if API fails
+                    loadUserData();
+                }
+
+                // Fetch matching blood requests for the donor
+                try {
+                    const requestsResponse = await API.requests.getList();
+                    if (requestsResponse.success && requestsResponse.data) {
+                        // Count matching requests (requests where the current user is matched as a donor)
+                        const requests = requestsResponse.data.blood_requests || [];
+                        document.getElementById('pendingRequests').textContent = requests.length;
+                    }
+                } catch (error) {
+                    console.error('Failed to fetch matching requests:', error);
+                    document.getElementById('pendingRequests').textContent = '0';
+                }
+            } catch (error) {
+                console.error('Failed to refresh user data:', error);
+                // Fallback to local data
+                loadUserData();
+            } finally {
+                // Remove hidden class or set body as loaded
+                document.body.classList.add('loaded');
+            }
+        }
+
+        function loadUserData(freshData = null) {
+            const userData = freshData || getUserData();
+
+            if (!userData) {
+                window.location.href = '../../auth/user-login.html';
+                return;
+            }
+
+            // Update header info
+            document.getElementById('userName').textContent =
+                `${userData.first_name || ''} ${userData.last_name || ''}`.trim() || userData.email || 'User';
+            document.getElementById('userType').textContent = (userData.user_type || 'Donor').charAt(0).toUpperCase() + (userData.user_type || 'donor').slice(1).toLowerCase();
+            document.getElementById('userAvatar').textContent =
+                (userData.first_name || userData.email || 'U').charAt(0).toUpperCase();
+
+            // Update welcome section
+            document.getElementById('welcomeName').textContent = userData.first_name || 'User';
+
+            // Update stats
+            document.getElementById('userBloodGroup').textContent = userData.blood_group || '--';
+            document.getElementById('totalDonations').textContent = userData.donation_count ?? '0';
+            const isEligible = userData.is_eligible;
+            document.getElementById('eligibilityStatus').textContent =
+                isEligible === true ? 'Eligible' : (isEligible === false ? 'Not Eligible' : 'Unknown');
+
+            // Update profile section
+            document.getElementById('profileName').textContent =
+                `${userData.first_name || ''} ${userData.last_name || ''}`.trim() || '--';
+            document.getElementById('profileEmail').textContent = userData.email || '--';
+            document.getElementById('profilePhone').textContent = userData.phone_number || '--';
+            document.getElementById('profileBloodGroup').textContent = userData.blood_group || '--';
+            document.getElementById('profileCity').textContent = userData.city || '--';
+            document.getElementById('profileMemberSince').textContent =
+                userData.date_joined ? new Date(userData.date_joined).toLocaleDateString() : '--';
+
+            // Update donor actions based on status
+            updateDonorActions(userData);
+        }
+
+        function updateDonorActions(userData) {
+            const actionsGrid = document.querySelector('.actions-grid');
+            if (!actionsGrid) return;
+
+            // Remove existing donor registration card if any
+            const existingRegCard = document.getElementById('donorRegCard');
+            if (existingRegCard) existingRegCard.remove();
+
+            // Check donor status
+            const status = userData.donor_status;
+
+            if (!status || status === 'DONOR_REJECTED') {
+                // Show Register as Donor card
+                const regCard = document.createElement('a');
+                regCard.href = 'donor-registration.html';
+                regCard.className = 'action-card';
+                regCard.id = 'donorRegCard';
+                regCard.innerHTML = `
+                    <h3><i class="fa-solid fa-heart-pulse"></i> Become a Donor</h3>
+                    <p>Apply to become a verified blood donor and save lives in your community.</p>
+                `;
+                actionsGrid.prepend(regCard);
+            } else if (status === 'DONOR_PENDING') {
+                // Show Pending Status card
+                const pendingCard = document.createElement('div');
+                pendingCard.className = 'action-card';
+                pendingCard.id = 'donorRegCard';
+                pendingCard.style.cursor = 'default';
+                pendingCard.innerHTML = `
+                    <h3><i class="fa-solid fa-clock-rotate-left" style="color: var(--warning-yellow);"></i> Application Pending</h3>
+                    <p>Your donor application is being reviewed by our team. We'll notify you soon!</p>
+                `;
+                actionsGrid.prepend(pendingCard);
+            } else if (status === 'DONOR_APPROVED') {
+                // Keep the standard donor actions (already in HTML or add if missing)
+                // For approved donors, maybe add a "Donation History" or "Find Requests" card
+            }
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,3 @@
+"""
+Recipients app - Init file.
+"""

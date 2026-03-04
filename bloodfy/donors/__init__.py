@@ -1,0 +1,3 @@
+"""
+Donors app - Init file.
+"""

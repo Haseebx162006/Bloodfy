@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bloodify - Account Settings</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        :root {
+            --primary-red: #E53935;
+            --primary-red-dark: #C62828;
+            --bg-dark-primary: #181A1E;
+            --bg-dark-secondary: #1F2229;
+            --text-primary: #F1F5F9;
+            --text-secondary: #94A3B8;
+            --border-color: #333944;
+            --success-green: #4CAF50;
+            --font-family: 'Poppins', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: var(--font-family);
+        }
+
+        body {
+            background-color: var(--bg-dark-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+
+        /* Sidebar similar to other pages */
+        .sidebar {
+            width: 260px;
+            height: 100vh;
+            background: rgba(31, 34, 41, 0.95);
+            border-right: 1px solid var(--border-color);
+            position: fixed;
+            left: 0;
+            top: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-header {
+            padding: 24px;
+            text-align: center;
+            color: var(--primary-red);
+            font-size: 1.5rem;
+            font-weight: 700;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .sidebar-nav {
+            flex-grow: 1;
+            padding: 20px 0;
+        }
+
+        .sidebar-nav ul {
+            list-style: none;
+        }
+
+        .sidebar-nav ul li a {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 16px 30px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        .sidebar-nav ul li a:hover,
+        .sidebar-nav ul li.active a {
+            background: rgba(229, 57, 53, 0.1);
+            color: var(--primary-red);
+            border-left: 4px solid var(--primary-red);
+        }
+
+        .main-content {
+            margin-left: 260px;
+            padding: 40px;
+        }
+
+        .settings-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .settings-header {
+            margin-bottom: 30px;
+        }
+
+        .settings-header h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .settings-section {
+            background: var(--bg-dark-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .settings-section h2 {
+            font-size: 1.3rem;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .settings-section h2 i {
+            color: var(--primary-red);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group.full-width {
+            grid-column: span 2;
+        }
+
+        .form-group label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .form-control {
+            background: var(--bg-dark-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 12px;
+            color: white;
+            font-size: 0.95rem;
+            transition: 0.3s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-red);
+            box-shadow: 0 0 0 2px rgba(229, 57, 53, 0.2);
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            border: none;
+            font-size: 0.95rem;
+        }
+
+        .btn-primary {
+            background: var(--primary-red);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-red-dark);
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+        }
+
+        .btn-outline:hover {
+            border-color: var(--text-primary);
+            color: var(--text-primary);
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .alert-success {
+            background: rgba(76, 175, 80, 0.1);
+            color: var(--success-green);
+            border: 1px solid var(--success-green);
+        }
+
+        .alert-error {
+            background: rgba(229, 57, 53, 0.1);
+            color: var(--primary-red);
+            border: 1px solid var(--primary-red);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <!-- Logo removed as per user request -->
+        </div>
+        <nav class="sidebar-nav">
+            <ul>
+                <li><a href="dashboard.html"><i class="fa-solid fa-table-columns"></i> Dashboard</a></li>
+                <li><a href="emergency.html"><i class="fa-solid fa-map-location-dot"></i> Donor Map</a></li>
+                <li><a href="requests.html"><i class="fa-solid fa-hand-holding-medical"></i> My Requests</a></li>
+                <li><a href="chatbot.html"><i class="fas fa-robot"></i> Chatbot</a></li>
+                <li><a href="notifications.html"><i class="fa-solid fa-paper-plane"></i> Notifications</a></li>
+                <li class="active"><a href="settings.html"><i class="fa-solid fa-gear"></i> Settings</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="settings-container">
+            <div class="settings-header">
+                <h1>Settings</h1>
+                <p style="color: var(--text-secondary);">Manage your profile information and account security.</p>
+            </div>
+
+            <div id="generalAlert" class="alert"></div>
+
+            <!-- Profile Info Section -->
+            <section class="settings-section">
+                <h2><i class="fa-solid fa-user"></i> Profile Information</h2>
+                <form id="profileForm">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>First Name</label>
+                            <input type="text" id="firstName" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Last Name</label>
+                            <input type="text" id="lastName" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Phone Number</label>
+                            <input type="text" id="phone" class="form-control" placeholder="+92XXXXXXXXXX">
+                        </div>
+                        <div class="form-group">
+                            <label>City</label>
+                            <input type="text" id="city" class="form-control">
+                        </div>
+                        <div class="form-group full-width">
+                            <label>Address</label>
+                            <textarea id="address" class="form-control" rows="3"></textarea>
+                        </div>
+                    </div>
+                    <div style="margin-top: 25px;">
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </div>
+                </form>
+            </section>
+
+            <!-- Password Section -->
+            <section class="settings-section">
+                <h2><i class="fa-solid fa-lock"></i> Security</h2>
+                <form id="passwordForm">
+                    <div class="form-grid">
+                        <div class="form-group full-width">
+                            <label>Current Password</label>
+                            <input type="password" id="currentPassword" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label>New Password</label>
+                            <input type="password" id="newPassword" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Confirm New Password</label>
+                            <input type="password" id="confirmPassword" class="form-control" required>
+                        </div>
+                    </div>
+                    <div style="margin-top: 25px;">
+                        <button type="submit" class="btn btn-primary">Update Password</button>
+                    </div>
+                </form>
+            </section>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script src="../../config/api-config.js"></script>
+    <script src="../../js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const userData = getUserData();
+            if (!userData) {
+                window.location.href = '../../auth/user-login.html';
+                return;
+            }
+
+            function prefillForm(userData) {
+                if (!userData) return;
+                document.getElementById('firstName').value = userData.first_name || '';
+                document.getElementById('lastName').value = userData.last_name || '';
+                document.getElementById('phone').value = userData.phone_number || '';
+                document.getElementById('city').value = userData.city || '';
+                document.getElementById('address').value = userData.address || '';
+            }
+
+            // Initial prefill from local storage
+            prefillForm(userData);
+
+            // Fetch fresh data from backend
+            async function refreshUserData() {
+                try {
+                    const response = await API.users.getProfile();
+                    if (response.success) {
+                        setUserData(response.data);
+                        prefillForm(response.data);
+                    }
+                } catch (error) {
+                    console.error('Failed to refresh user data:', error);
+                }
+            }
+
+            // Call refresh on load
+            refreshUserData();
+
+            // Handle Profile Form
+            document.getElementById('profileForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const alert = document.getElementById('generalAlert');
+
+                try {
+                    const profileData = {
+                        first_name: document.getElementById('firstName').value,
+                        last_name: document.getElementById('lastName').value,
+                        phone_number: document.getElementById('phone').value,
+                        city: document.getElementById('city').value,
+                        address: document.getElementById('address').value
+                    };
+
+                    const response = await API.users.updateProfile(profileData);
+
+                    if (response.success) {
+                        setUserData(response.data);
+                        showAlert('Profile updated successfully!', 'success');
+                    } else {
+                        showAlert(response.message || 'Failed to update profile', 'error');
+                    }
+                } catch (err) {
+                    console.error('Update failed:', err);
+                    showAlert('Failed to connect to server', 'error');
+                }
+            });
+
+            // Handle Password Form
+            document.getElementById('passwordForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const newPass = document.getElementById('newPassword').value;
+                const confirmPass = document.getElementById('confirmPassword').value;
+
+                if (newPass !== confirmPass) {
+                    showAlert('New passwords do not match', 'error');
+                    return;
+                }
+
+                try {
+                    const passData = {
+                        current_password: document.getElementById('currentPassword').value,
+                        new_password: newPass,
+                        confirm_password: confirmPass
+                    };
+
+                    const response = await API.users.changePassword(passData);
+
+                    if (response.success) {
+                        showAlert('Password changed successfully!', 'success');
+                        e.target.reset();
+                    } else {
+                        showAlert(response.message || 'Failed to change password', 'error');
+                    }
+                } catch (err) {
+                    showAlert('Failed to change password: ' + (err.message || 'Unknown error'), 'error');
+                }
+            });
+
+            function showAlert(msg, type) {
+                const alert = document.getElementById('generalAlert');
+                alert.textContent = msg;
+                alert.style.display = 'block';
+                alert.className = 'alert alert-' + type;
+
+                setTimeout(() => {
+                    alert.style.display = 'none';
+                }, 5000);
+            }
+        });
+    </script>
+</body>
+
+</html>

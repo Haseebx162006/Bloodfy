@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bloodfy - Donor Profile</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        :root {
+            --primary-red: #c62828;
+            --primary-red-dark: #b71c1c;
+            --bg-dark-primary: #121212;
+            --glass-bg: rgba(25, 25, 25, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.15);
+            --text-primary: #F1F5F9;
+            --text-secondary: #94A3B8;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            --font-family: 'Poppins', sans-serif;
+            --sidebar-width: 260px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: var(--font-family);
+        }
+
+        body {
+            display: flex;
+            background-color: var(--bg-dark-primary);
+            color: var(--text-primary);
+            overflow-x: hidden;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+        }
+
+        /* Sidebar & Header (Standard) */
+
+        .sidebar {
+            width: var(--sidebar-width);
+            height: 100vh;
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            border-right: 1px solid var(--glass-border);
+            display: flex;
+            flex-direction: column;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            gap: 15px;
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--primary-red);
+        }
+
+        .sidebar-header .logo {
+            height: 45px;
+            width: 45px;
+            border-radius: 50%;
+            border: 2px solid var(--primary-red);
+        }
+
+        .sidebar-nav {
+            flex-grow: 1;
+            padding: 15px 0;
+        }
+
+        .sidebar-nav ul li a {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-weight: 500;
+            font-size: 1rem;
+            padding: 16px 30px;
+            margin: 6px 15px;
+            border-radius: 10px;
+            color: var(--text-secondary);
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-nav ul li a i {
+            font-size: 1.2rem;
+            width: 24px;
+            text-align: center;
+        }
+
+        .sidebar-nav ul li a:hover,
+        .sidebar-nav ul li.active a {
+            background-color: var(--primary-red);
+            color: var(--text-primary);
+        }
+
+        .sidebar-footer {
+            padding: 30px;
+            border-top: 1px solid var(--glass-border);
+        }
+
+        .sidebar-footer a {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 1rem;
+            color: var(--text-secondary);
+        }
+
+        .main-content {
+            flex-grow: 1;
+            width: calc(100% - var(--sidebar-width));
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px 40px;
+            background: rgba(18, 18, 18, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--glass-border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header h2 {
+            font-weight: 600;
+            font-size: 1.5rem;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .admin-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+        }
+
+
+
+        /* --- DONOR PAGE SPECIFIC --- */
+
+        .donor-main {
+            padding: 40px;
+        }
+
+        .profile-header {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .widget {
+            background: var(--glass-bg);
+            border-radius: 16px;
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--shadow);
+            padding: 30px;
+        }
+
+
+
+        .verification-badge {
+            background: rgba(0, 200, 83, 0.15);
+            color: #00C853;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* Cooldown Status (UC-06: 90 Days Rule) */
+
+        .status-container {
+            margin-top: 25px;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid var(--glass-border);
+        }
+
+        .status-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            display: block;
+            text-align: left;
+        }
+
+        .progress-track {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--primary-red);
+            width: 40%;
+            border-radius: 10px;
+        }
+
+        /* 40% cooldown */
+
+        .status-info {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .days-left {
+            color: var(--primary-red);
+        }
+
+        /* Right: Edit Form (UC-02) */
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--glass-border);
+            border-radius: 10px;
+            color: var(--text-primary);
+            font-family: var(--font-family);
+            transition: 0.3s;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: var(--primary-red);
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-primary-shine {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(90deg, var(--primary-red), var(--primary-red-dark));
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.2s;
+        }
+
+        .btn-primary-shine:hover {
+            transform: translateY(-2px);
+        }
+
+        /* History Table */
+
+        .history-section h3 {
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+        }
+
+        .table-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            padding: 15px;
+            border-bottom: 1px solid var(--glass-border);
+            font-size: 0.9rem;
+        }
+
+        .table-head {
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            border-bottom: 2px solid var(--glass-border);
+        }
+    </style>
+</head>
+
+<body>
+
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <!-- Logo removed as per user request -->
+        </div>
+        <nav class="sidebar-nav">
+            <ul>
+                <li><a href="dashboard.html"><i class="fa-solid fa-table-columns"></i> Dashboard</a></li>
+                <li class="active"><a href="donor.html"><i class="fa-solid fa-users"></i> Donors</a></li>
+                <li><a href="patient.html"><i class="fa-solid fa-procedures"></i> Blood Requests</a></li>
+                <li><a href="bloodstock.html"><i class="fa-solid fa-vials"></i> Blood Stock</a></li>
+                <li><a href="staff.html"><i class="fa-solid fa-user-tie"></i> Staff</a></li>
+                <li><a href="analytics.html"><i class="fa-solid fa-chart-line"></i> Analytics</a></li>
+                <li><a href="emergency.html"><i class="fa-solid fa-bolt"></i> Emergency</a></li>
+                <li><a href="chatbot.html"><i class="fa-solid fa-robot"></i> Chatbot</a></li>
+                <li><a href="notifications.html"><i class="fa-solid fa-bell"></i> Notifications</a></li>
+                <li><a href="settings.html"><i class="fa-solid fa-gear"></i> Settings</a></li>
+            </ul>
+        </nav>
+        <div class="sidebar-footer"><a href="#" data-action="logout"><i class="fa-solid fa-right-from-bracket"></i>
+                Logout</a></div>
+    </aside>
+
+    <div class="main-content">
+        <header class="header">
+            <h2>Donor Profile Management</h2>
+            <div class="admin-profile">
+                <!-- Profile content will be loaded by JS -->
+                <span class="admin-name">A. Hameed</span> <i class="fa-solid fa-chevron-down"></i>
+            </div>
+        </header>
+
+        <main class="donor-profile-main">
+
+            <div class="profile-header">
+
+
+
+                <section class="widget">
+                    <h3 style="margin-bottom: 20px;">Edit Profile Information</h3>
+                    <form id="donorProfileForm">
+                        <div class="form-grid">
+                            <div class="input-group">
+                                <label>Full Name</label>
+                                <input type="text" name="full_name" class="input-field">
+                            </div>
+                            <div class="input-group">
+                                <label>Phone Number</label>
+                                <input type="text" name="phone_number" class="input-field">
+                            </div>
+                            <div class="input-group">
+                                <label>City</label>
+                                <input type="text" name="city" class="input-field">
+                            </div>
+                            <div class="input-group">
+                                <label>Last Donation Date</label>
+                                <input type="date" name="last_donation" class="input-field">
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label>Address</label>
+                            <input type="text" name="address" class="input-field">
+                        </div>
+                        <button type="submit" id="btnSaveDonor" class="btn-primary-shine">Save Changes</button>
+                    </form>
+                </section>
+            </div>
+
+            <section class="widget history-section">
+                <h3><i class="fa-solid fa-clock-rotate-left"></i> Donation History</h3>
+                <!-- Dynamic content will be loaded here -->
+                <div class="table-row table-head">
+                    <div>Date</div>
+                    <div>Hospital</div>
+                    <div>Units</div>
+                    <div>Status</div>
+                </div>
+                <div class="table-row">
+                    <div style="flex: 1; text-align: center; padding: 20px; color: var(--text-secondary);">Loading
+                        donation history...</div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- API Configuration -->
+    <script src="../../config/api-config.js"></script>
+
+    <!-- Main Integration Script -->
+    <script src="../../js/main.js"></script>
+
+    <!-- Donor Management Script -->
+    <script src="../../js/donors.js"></script>
+
+</body>
+
+</html>

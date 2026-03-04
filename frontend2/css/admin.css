@@ -1,0 +1,26 @@
+/**
+ * Bloodify Admin Styles Bundle
+ * ============================
+ * Single import file for all admin page styles.
+ * 
+ * Usage in HTML:
+ * <link rel="stylesheet" href="css/admin.css">
+ */
+
+/* ========== BASE ========== */
+@import 'base/_variables.css';
+@import 'base/_reset.css';
+@import 'base/_typography.css';
+@import 'base/_utilities.css';
+
+/* ========== COMPONENTS ========== */
+@import 'components/_buttons.css';
+@import 'components/_cards.css';
+@import 'components/_forms.css';
+@import 'components/_tables.css';
+@import 'components/_modals.css';
+@import 'components/_badges.css';
+@import 'components/_sidebar.css';
+
+/* ========== LAYOUTS ========== */
+@import 'layouts/_admin-layout.css';

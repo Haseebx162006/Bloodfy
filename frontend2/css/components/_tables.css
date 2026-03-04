@@ -1,0 +1,178 @@
+/**
+ * Bloodify Table Component
+ * ========================
+ * Data table styles.
+ */
+
+/* ========== TABLE WRAPPER ========== */
+.table-wrapper {
+    background: var(--bg-glass);
+    backdrop-filter: blur(15px);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+}
+
+.table-wrapper--scroll {
+    overflow-x: auto;
+}
+
+/* ========== BASE TABLE ========== */
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--font-size-sm);
+}
+
+/* ========== TABLE HEADER ========== */
+.table thead {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.table th {
+    padding: 16px 20px;
+    text-align: left;
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    font-size: var(--font-size-xs);
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+}
+
+.table th:first-child {
+    padding-left: 24px;
+}
+
+.table th:last-child {
+    padding-right: 24px;
+}
+
+/* ========== TABLE BODY ========== */
+.table td {
+    padding: 16px 20px;
+    color: var(--text-primary);
+    border-bottom: 1px solid var(--border-subtle);
+    vertical-align: middle;
+}
+
+.table td:first-child {
+    padding-left: 24px;
+}
+
+.table td:last-child {
+    padding-right: 24px;
+}
+
+.table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* ========== TABLE HOVER ========== */
+.table--hover tbody tr {
+    transition: background var(--transition-fast);
+}
+
+.table--hover tbody tr:hover {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+/* ========== TABLE STRIPED ========== */
+.table--striped tbody tr:nth-child(even) {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+/* ========== TABLE ALIGNMENT ========== */
+.table .text-center {
+    text-align: center;
+}
+
+.table .text-right {
+    text-align: right;
+}
+
+/* ========== TABLE ACTIONS ========== */
+.table__actions {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    justify-content: flex-end;
+}
+
+.table__action-btn {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all var(--transition-base);
+}
+
+.table__action-btn:hover {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+    color: var(--text-light);
+}
+
+.table__action-btn--danger:hover {
+    background: var(--color-danger);
+    border-color: var(--color-danger);
+}
+
+.table__action-btn--success:hover {
+    background: var(--color-success);
+    border-color: var(--color-success);
+}
+
+/* ========== TABLE EMPTY STATE ========== */
+.table__empty {
+    text-align: center;
+    padding: var(--spacing-2xl);
+    color: var(--text-muted);
+}
+
+.table__empty-icon {
+    font-size: 3rem;
+    margin-bottom: var(--spacing-md);
+    opacity: 0.5;
+}
+
+/* ========== RESPONSIVE TABLE ========== */
+@media (max-width: 768px) {
+    .table--responsive {
+        display: block;
+    }
+
+    .table--responsive thead {
+        display: none;
+    }
+
+    .table--responsive tbody,
+    .table--responsive tr,
+    .table--responsive td {
+        display: block;
+    }
+
+    .table--responsive tr {
+        padding: var(--spacing-md);
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .table--responsive td {
+        padding: var(--spacing-sm) 0;
+        border-bottom: none;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .table--responsive td::before {
+        content: attr(data-label);
+        font-weight: var(--font-weight-semibold);
+        color: var(--text-secondary);
+    }
+}

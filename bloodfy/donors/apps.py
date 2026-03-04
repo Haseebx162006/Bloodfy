@@ -1,0 +1,17 @@
+"""
+Donors app configuration.
+"""
+
+from django.apps import AppConfig
+
+
+class DonorsConfig(AppConfig):
+    default_auto_field = 'django.db.models.BigAutoField'
+    name = 'donors'
+    verbose_name = 'Donor Management'
+    
+    def ready(self):
+        try:
+            import donors.signals  # noqa
+        except ImportError:
+            pass

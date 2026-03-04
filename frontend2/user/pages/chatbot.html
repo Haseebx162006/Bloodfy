@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bloodfy - AI Chatbot</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        /* --- Shared Theme CSS --- */
+
+        :root {
+            --primary-red: #E53935;
+            --primary-red-dark: #C62828;
+            --bg-dark-primary: #181A1E;
+            --bg-dark-secondary: #1F2229;
+            --text-primary: #F1F5F9;
+            --text-secondary: #94A3B8;
+            --border-color: #333944;
+            --font-family: 'Poppins', sans-serif;
+            --sidebar-width: 260px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: var(--font-family);
+        }
+
+        body {
+            display: flex;
+            background-color: var(--bg-dark-primary);
+            color: var(--text-primary);
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        /* Sidebar */
+
+        .sidebar {
+            width: var(--sidebar-width);
+            height: 100vh;
+            background: rgba(31, 34, 41, 0.95);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+        }
+
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            gap: 15px;
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--primary-red);
+        }
+
+        .sidebar-nav {
+            flex-grow: 1;
+            padding: 15px 0;
+        }
+
+        .sidebar-nav ul li a {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-weight: 500;
+            font-size: 1rem;
+            padding: 16px 30px;
+            margin: 6px 15px;
+            border-radius: 10px;
+            color: var(--text-secondary);
+            transition: 0.3s;
+        }
+
+        .sidebar-nav ul li a:hover,
+        .sidebar-nav ul li.active a {
+            background-color: var(--primary-red);
+            color: var(--text-primary);
+        }
+
+        .sidebar-footer {
+            padding: 30px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .sidebar-footer a {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: var(--text-secondary);
+        }
+
+        /* Main Content Grid */
+
+        .main-content {
+            flex-grow: 1;
+            display: grid;
+            grid-template-rows: 80px 1fr;
+            height: 100vh;
+        }
+
+        /* Header */
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 40px;
+            background: rgba(24, 26, 30, 0.95);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .header h2 {
+            font-weight: 600;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .bot-status {
+            width: 10px;
+            height: 10px;
+            background: #00C853;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #00C853;
+        }
+
+        .admin-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .admin-profile img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid var(--border-color);
+        }
+
+        /* Chat Layout */
+
+        .chat-layout {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        /* Chat Area */
+
+        .chat-area {
+            display: flex;
+            flex-direction: column;
+            background: var(--bg-dark-primary);
+            position: relative;
+        }
+
+        .messages-container {
+            flex-grow: 1;
+            padding: 30px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            /* Custom Scrollbar */
+            scrollbar-width: thin;
+            scrollbar-color: var(--border-color) transparent;
+        }
+
+        .message {
+            max-width: 70%;
+            padding: 15px 20px;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            position: relative;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.bot {
+            align-self: flex-start;
+            background: var(--bg-dark-secondary);
+            border: 1px solid var(--border-color);
+            border-bottom-left-radius: 2px;
+        }
+
+        .message.user {
+            align-self: flex-end;
+            background: linear-gradient(135deg, var(--primary-red), var(--primary-red-dark));
+            color: white;
+            border-bottom-right-radius: 2px;
+            box-shadow: 0 5px 15px rgba(229, 57, 53, 0.3);
+        }
+
+        .avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            bottom: -10px;
+        }
+
+        .bot .avatar {
+            left: -45px;
+            background: #333;
+            color: var(--primary-red);
+            border: 1px solid var(--border-color);
+        }
+
+        .user .avatar {
+            right: -45px;
+            display: none;
+        }
+
+        /* User avatar usually hidden in chat UI bubbles */
+
+        .typing-indicator {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-left: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .dot {
+            width: 6px;
+            height: 6px;
+            background: var(--text-secondary);
+            border-radius: 50%;
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+
+        .dot:nth-child(1) {
+            animation-delay: -0.32s;
+        }
+
+        .dot:nth-child(2) {
+            animation-delay: -0.16s;
+        }
+
+        @keyframes bounce {
+
+            0%,
+            80%,
+            100% {
+                transform: scale(0);
+            }
+
+            40% {
+                transform: scale(1);
+            }
+        }
+
+        /* Input Area */
+
+        .input-area {
+            padding: 20px 30px;
+            background: var(--bg-dark-secondary);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .chat-input {
+            flex-grow: 1;
+            padding: 15px;
+            border-radius: 25px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-dark-primary);
+            color: white;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .chat-input:focus {
+            border-color: var(--primary-red);
+        }
+
+        .btn-send {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--primary-red);
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.3s;
+        }
+
+        .btn-send:hover {
+            background: var(--primary-red-dark);
+            transform: scale(1.05);
+        }
+
+        /* Right Panel (FAQs) */
+
+        .info-panel {
+            background: var(--bg-dark-secondary);
+            border-left: 1px solid var(--border-color);
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .info-card {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .info-card:hover {
+            border-color: var(--primary-red);
+            background: rgba(229, 57, 53, 0.1);
+        }
+
+        .info-card h4 {
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+            color: var(--text-primary);
+        }
+
+        .info-card p {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+    </style>
+</head>
+
+<body>
+
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <!-- Logo removed as per user request -->
+        </div>
+        <nav class="sidebar-nav">
+            <ul>
+                <li><a href="dashboard.html"><i class="fa-solid fa-table-columns"></i> Dashboard</a></li>
+                <li><a href="emergency.html"><i class="fa-solid fa-map-location-dot"></i> Donor Map</a></li>
+                <li><a href="requests.html"><i class="fa-solid fa-hand-holding-medical"></i> My Requests</a></li>
+                <li class="active"><a href="chatbot.html"><i class="fas fa-robot"></i> Chatbot</a></li>
+                <li><a href="notifications.html"><i class="fa-solid fa-paper-plane"></i> Notifications</a></li>
+                <li><a href="settings.html"><i class="fa-solid fa-gear"></i> Settings</a></li>
+            </ul>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="#" data-action="logout"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+        </div>
+    </aside>
+
+    <div class="main-content">
+        <header class="header">
+            <h2>
+                <div class="bot-status"></div>
+                Bloodfy AI Assistant
+            </h2>
+            <div class="admin-profile">
+                <span id="headerUserName">A. Hameed</span>
+            </div>
+        </header>
+
+        <div class="chat-layout">
+
+            <div class="chat-area">
+                <div class="messages-container">
+
+                    <div class="message bot">
+                        <div class="avatar"><i class="fas fa-robot"></i></div>
+                        Hello! I am the Bloodfy AI. How can I assist you with donor management or blood requests today?
+                    </div>
+
+                    <div class="message user">
+                        Show me donors for O- Negative in Lahore.
+                    </div>
+
+                    <div class="message bot">
+                        <div class="avatar"><i class="fas fa-robot"></i></div>
+                        I found <strong>3 active donors</strong> for O- Negative in Lahore. <br><br> 1. Bilal Ahmad
+                        (Model Town) - 95% Match <br> 2. Ali Raza (DHA) - 88% Match <br>
+                        <br> Would you like to send them an SMS alert?
+                    </div>
+
+                    <div class="typing-indicator">
+                        Bloodfy AI is typing
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                    </div>
+
+                </div>
+
+                <div class="input-area">
+                    <button
+                        style="background:none; border:none; color:var(--text-secondary); cursor:pointer; font-size:1.2rem;"><i
+                            class="fa-solid fa-paperclip"></i></button>
+                    <input type="text" class="chat-input" placeholder="Type your query here...">
+                    <button class="btn-send"><i class="fa-solid fa-paper-plane"></i></button>
+                </div>
+            </div>
+
+            <div class="info-panel">
+                <h3 style="margin-bottom:10px;">Suggested Actions</h3>
+
+                <div class="info-card">
+                    <h4><i class="fa-solid fa-magnifying-glass"></i> Find Donors</h4>
+                    <p>Search by blood group and location.</p>
+                </div>
+
+                <div class="info-card">
+                    <h4><i class="fa-solid fa-check-double"></i> Verify Donor</h4>
+                    <p>Check eligibility for recent signups.</p>
+                </div>
+
+                <div class="info-card">
+                    <h4><i class="fa-solid fa-chart-pie"></i> Check Stock</h4>
+                    <p>Get current inventory levels for any hospital.</p>
+                </div>
+
+                <div class="info-card">
+                    <h4><i class="fa-solid fa-triangle-exclamation"></i> Emergency Alert</h4>
+                    <p>Broadcast high-priority request.</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- API Configuration -->
+    <script src="../../config/api-config.js"></script>
+
+    <!-- Main Integration Script -->
+    <script src="../../js/main.js"></script>
+
+    <!-- Chatbot Integration Script -->
+    <script src="../../js/chatbot.js"></script>
+
+</body>
+
+</html>

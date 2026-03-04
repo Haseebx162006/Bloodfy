@@ -1,0 +1,50 @@
+<!-- Admin Header Partial -->
+<!-- This file is loaded dynamically by components.js -->
+
+<div class="header__left">
+    <button class="header__menu-toggle d-none" id="menuToggle">
+        <i class="fa-solid fa-bars"></i>
+    </button>
+    <div class="header__title-wrap">
+        <h1 class="header__title" id="pageTitle">Dashboard</h1>
+        <p class="header__subtitle" id="pageSubtitle">Welcome back, Admin</p>
+    </div>
+</div>
+
+<div class="header__right">
+    <!-- Search -->
+    <div class="header__search">
+        <i class="fa-solid fa-search header__search-icon"></i>
+        <input type="text" class="header__search-input" placeholder="Search...">
+    </div>
+
+    <!-- Notifications -->
+    <button class="header__action" id="notificationBtn" title="Notifications">
+        <i class="fa-solid fa-bell"></i>
+        <span class="header__action-badge" id="notificationCount">3</span>
+    </button>
+
+    <!-- Help -->
+    <button class="header__action" id="helpBtn" title="Help">
+        <i class="fa-solid fa-circle-question"></i>
+    </button>
+
+    <!-- User Profile -->
+    <div class="header__user" id="userProfile">
+        <div class="header__user-info">
+            <span class="header__user-name" id="userName">Admin User</span>
+            <span class="header__user-role" id="userRole">Administrator</span>
+        </div>
+
+        <!-- Dropdown Menu -->
+        <div class="header__user-dropdown" id="userDropdown">
+            <a href="settings.html" class="header__dropdown-item">
+                <i class="fa-solid fa-gear"></i> Settings
+            </a>
+            <div class="header__dropdown-divider"></div>
+            <a href="#" class="header__dropdown-item header__dropdown-item--danger" id="headerLogoutBtn">
+                <i class="fa-solid fa-right-from-bracket"></i> Logout
+            </a>
+        </div>
+    </div>
+</div>

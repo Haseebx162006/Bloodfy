@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bloodify Admin - Notifications</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        :root {
+            --primary-red: #E53935;
+            --primary-red-dark: #C62828;
+            --bg-dark-primary: #181A1E;
+            --bg-dark-secondary: #1F2229;
+            --text-primary: #F1F5F9;
+            --text-secondary: #94A3B8;
+            --border-color: #333944;
+            --success-green: #4CAF50;
+            --warning-yellow: #FF9800;
+            --info-blue: #2196F3;
+            --font-family: 'Poppins', sans-serif;
+            --sidebar-width: 260px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: var(--font-family);
+        }
+
+        body {
+            display: flex;
+            background-color: var(--bg-dark-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        body.loaded {
+            opacity: 1;
+        }
+
+        /* Sidebar Styles (Matching dashboard) */
+        .sidebar {
+            width: var(--sidebar-width);
+            height: 100vh;
+            background: rgba(31, 34, 41, 0.8);
+            backdrop-filter: blur(10px);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            position: sticky;
+            top: 0;
+        }
+
+        .sidebar-header {
+            padding: 30px;
+            text-align: center;
+            color: var(--primary-red);
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+
+        .sidebar-nav ul li a {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px 30px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-nav ul li a:hover,
+        .sidebar-nav ul li.active a {
+            background: var(--primary-red);
+            color: white;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 40px;
+            max-width: calc(100% - var(--sidebar-width));
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .page-title h1 {
+            font-size: 2rem;
+            margin-bottom: 5px;
+        }
+
+        .page-title p {
+            color: var(--text-secondary);
+        }
+
+        .mark-all-read {
+            color: var(--info-blue);
+            background: none;
+            border: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: opacity 0.3s ease;
+        }
+
+        .mark-all-read:hover {
+            opacity: 0.8;
+            text-decoration: underline;
+        }
+
+        /* Notifications List */
+        .notifications-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .notification-card {
+            background: var(--bg-dark-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            gap: 20px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .notification-card.unread {
+            border-left: 4px solid var(--primary-red);
+            background: rgba(229, 57, 53, 0.05);
+        }
+
+        .notification-card:hover {
+            transform: translateX(5px);
+            border-color: var(--primary-red);
+        }
+
+        .notification-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .icon-info {
+            background: rgba(33, 150, 243, 0.2);
+            color: var(--info-blue);
+        }
+
+        .icon-success {
+            background: rgba(76, 175, 80, 0.2);
+            color: var(--success-green);
+        }
+
+        .icon-warning {
+            background: rgba(255, 152, 0, 0.2);
+            color: var(--warning-yellow);
+        }
+
+        .icon-danger {
+            background: rgba(229, 57, 53, 0.2);
+            color: var(--primary-red);
+        }
+
+        .icon-blood_request {
+            background: rgba(229, 57, 53, 0.2);
+            color: var(--primary-red);
+        }
+
+        .icon-donor_approval {
+            background: rgba(255, 152, 0, 0.2);
+            color: var(--warning-yellow);
+        }
+
+        .notification-content {
+            flex: 1;
+        }
+
+        .notification-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .notification-time {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+
+        .notification-message {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        .notification-card.unread .notification-message {
+            color: var(--text-primary);
+        }
+
+        .mark-read-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 0.8rem;
+            padding: 5px;
+            margin-top: 10px;
+            transition: color 0.3s ease;
+        }
+
+        .mark-read-btn:hover {
+            color: var(--primary-red);
+        }
+
+        /* States */
+        .loading-state,
+        .empty-state {
+            text-align: center;
+            padding: 60px 0;
+            color: var(--text-secondary);
+            background: var(--bg-dark-secondary);
+            border-radius: 12px;
+            border: 1px dashed var(--border-color);
+        }
+
+        .loading-state i {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: var(--primary-red);
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
+
+            .main-content {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <i class="fa-solid fa-droplet"></i> Bloodify
+        </div>
+        <nav class="sidebar-nav">
+            <ul>
+                <li><a href="dashboard.html"><i class="fa-solid fa-table-columns"></i> Dashboard</a></li>
+                <li><a href="donor-requests.html"><i class="fa-solid fa-user-clock"></i> Donor Requests</a></li>
+                <li><a href="donor.html"><i class="fa-solid fa-users"></i> Donors</a></li>
+                <li><a href="patient.html"><i class="fa-solid fa-procedures"></i> Blood Requests</a></li>
+                <li><a href="bloodstock.html"><i class="fa-solid fa-vials"></i> Blood Stock</a></li>
+                <li class="active"><a href="notifications.html"><i class="fa-solid fa-bell"></i> Notifications</a></li>
+                <li><a href="settings.html"><i class="fa-solid fa-gear"></i> Settings</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <header class="page-header">
+            <div class="page-title">
+                <h1>Admin Notifications</h1>
+                <p>Stay updated with new requests and system alerts.</p>
+            </div>
+            <button class="mark-all-read" id="markAllRead">
+                <i class="fa-solid fa-check-double"></i> Mark all as read
+            </button>
+        </header>
+
+        <!-- Notifications List -->
+        <div class="notifications-list" id="notificationsList">
+            <div class="loading-state">
+                <i class="fa-solid fa-spinner fa-spin"></i>
+                <p>Loading notifications...</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script src="../../config/api-config.js"></script>
+    <script src="../../js/main.js"></script>
+    <script src="../js/notifications.js"></script>
+</body>
+
+</html>

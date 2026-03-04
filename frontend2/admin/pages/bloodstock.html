@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bloodfy Admin - Blood Stock</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        :root {
+            --primary-red: #c62828;
+            --primary-red-dark: #b71c1c;
+            --bg-dark-primary: #121212;
+            --glass-bg: rgba(25, 25, 25, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.15);
+            --text-primary: #F1F5F9;
+            --text-secondary: #94A3B8;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            --font-family: 'Poppins', sans-serif;
+            --sidebar-width: 260px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: var(--font-family);
+        }
+
+        body {
+            display: flex;
+            background-color: var(--bg-dark-primary);
+            color: var(--text-primary);
+            overflow-x: hidden;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+        }
+
+        /* --- Sidebar & Layout (Same as Dashboard) --- */
+
+        .sidebar {
+            width: var(--sidebar-width);
+            height: 100vh;
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            border-right: 1px solid var(--glass-border);
+            display: flex;
+            flex-direction: column;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            gap: 15px;
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--primary-red);
+        }
+
+        .sidebar-header .logo {
+            height: 45px;
+            width: 45px;
+            border-radius: 50%;
+            border: 2px solid var(--primary-red);
+        }
+
+        .sidebar-nav {
+            flex-grow: 1;
+            padding: 15px 0;
+        }
+
+        .sidebar-nav ul li a {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-weight: 500;
+            font-size: 1rem;
+            padding: 16px 30px;
+            margin: 6px 15px;
+            border-radius: 10px;
+            color: var(--text-secondary);
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-nav ul li a i {
+            font-size: 1.2rem;
+            width: 24px;
+            text-align: center;
+        }
+
+        .sidebar-nav ul li a:hover {
+            background-color: var(--primary-red);
+            color: var(--text-primary);
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(198, 40, 40, 0.3);
+        }
+
+        .sidebar-nav ul li.active a {
+            background-color: var(--primary-red);
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .sidebar-footer {
+            padding: 30px;
+            border-top: 1px solid var(--glass-border);
+        }
+
+        .sidebar-footer a {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 1rem;
+            color: var(--text-secondary);
+            transition: color 0.3s ease;
+        }
+
+        .sidebar-footer a:hover {
+            color: var(--primary-red);
+        }
+
+        .main-content {
+            flex-grow: 1;
+            width: calc(100% - var(--sidebar-width));
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px 40px;
+            background: rgba(18, 18, 18, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--glass-border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header h2 {
+            font-weight: 600;
+            font-size: 1.5rem;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .search-bar {
+            position: relative;
+        }
+
+        .search-bar i {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .search-bar input {
+            width: 350px;
+            padding: 13px 20px 13px 50px;
+            background: rgba(0, 0, 0, 0.25);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .search-bar input:focus {
+            outline: none;
+            background: rgba(0, 0, 0, 0.3);
+            border-color: var(--primary-red);
+            box-shadow: 0 0 15px rgba(198, 40, 40, 0.5), 0 0 0 1px var(--primary-red);
+        }
+
+        .admin-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+        }
+
+        .admin-profile img {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--glass-border);
+        }
+
+        .admin-profile span {
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        /* ========================================
+           BLOOD STOCK SPECIFIC STYLES
+           ======================================== */
+
+        .stock-main {
+            padding: 40px;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        /* Shine Button */
+
+        .btn-primary-shine {
+            padding: 12px 24px;
+            background: linear-gradient(90deg, var(--primary-red), var(--primary-red-dark));
+            color: var(--text-light);
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: transform 0.2s ease, box-shadow 0.3s ease;
+        }
+
+        .btn-primary-shine:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(198, 40, 40, 0.4);
+        }
+
+        .btn-primary-shine::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.4) 50%, rgba(255, 255, 255, 0) 100%);
+            transform: rotate(25deg) translateX(-150%);
+            transition: transform 0.7s ease;
+        }
+
+        .btn-primary-shine:hover::after {
+            transform: rotate(25deg) translateX(150%);
+        }
+
+        /* Blood Grid */
+
+        .blood-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .blood-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 25px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s ease;
+        }
+
+        .blood-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary-red);
+        }
+
+        .blood-type {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            z-index: 2;
+            position: relative;
+        }
+
+        .blood-units {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-top: 5px;
+            z-index: 2;
+            position: relative;
+        }
+
+        /* "Liquid" Animation inside card */
+
+        .liquid-bg {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(198, 40, 40, 0.15);
+            /* Subtle red fill */
+            transition: height 1s ease-in-out;
+            z-index: 1;
+        }
+
+        /* Low Stock Alert Style */
+
+        .blood-card.critical {
+            border: 1px solid var(--primary-red);
+        }
+
+        .blood-card.critical .blood-units {
+            color: var(--primary-red);
+            font-weight: 600;
+        }
+
+        .blood-card.critical .liquid-bg {
+            background: rgba(198, 40, 40, 0.3);
+        }
+
+        /* Table Section */
+
+        .widget {
+            background: var(--glass-bg);
+            border-radius: 16px;
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--shadow);
+            padding: 30px;
+        }
+
+        .widget-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .widget-header h3 {
+            font-weight: 600;
+            font-size: 1.25rem;
+            color: var(--text-primary);
+        }
+
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .table-header {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr 1fr 2fr 1fr;
+            gap: 15px;
+            padding: 0 20px 15px;
+            border-bottom: 1px solid var(--glass-border);
+            color: var(--text-secondary);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+
+        .table-row {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr 1fr 2fr 1fr;
+            gap: 15px;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 1px solid var(--glass-border);
+            transition: background-color 0.3s ease;
+        }
+
+        .table-row:last-child {
+            border-bottom: none;
+        }
+
+        .table-row:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .blood-badge {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 10px;
+            border-radius: 8px;
+            font-weight: 700;
+            color: var(--primary-red);
+            display: inline-block;
+        }
+
+        .btn-action {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 1px solid var(--glass-border);
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.3s;
+        }
+
+        .btn-action:hover {
+            background: var(--primary-red);
+            color: white;
+            border-color: var(--primary-red);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-header {
+            padding: 24px;
+            border-bottom: 1px solid var(--glass-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            color: var(--primary-red);
+            font-size: 1.5rem;
+            margin: 0;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 2rem;
+            cursor: pointer;
+            line-height: 1;
+            padding: 0;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: 0.3s;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: 0.3s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-red);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .btn-primary,
+        .btn-secondary {
+            flex: 1;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--primary-red);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-red-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(198, 40, 40, 0.4);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px solid var(--glass-border);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: var(--text-primary);
+            color: var(--text-primary);
+        }
+    </style>
+</head>
+
+<body>
+
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <!-- Logo removed as per user request -->
+        </div>
+        <nav class="sidebar-nav">
+            <ul>
+                <li><a href="dashboard.html"><i class="fa-solid fa-table-columns"></i> Dashboard</a></li>
+                <li><a href="donor.html"><i class="fa-solid fa-users"></i> Donors</a></li>
+                <li><a href="patient.html"><i class="fa-solid fa-procedures"></i> Blood Requests</a></li>
+                <li class="active"><a href="bloodstock.html"><i class="fa-solid fa-vials"></i> Blood Stock</a></li>
+                <li><a href="staff.html"><i class="fa-solid fa-user-tie"></i> Staff</a></li>
+                <li><a href="analytics.html"><i class="fa-solid fa-chart-line"></i> Analytics</a></li>
+                <li><a href="emergency.html"><i class="fa-solid fa-bolt"></i> Emergency</a></li>
+                <li><a href="chatbot.html"><i class="fa-solid fa-robot"></i> Chatbot</a></li>
+                <li><a href="notifications.html"><i class="fa-solid fa-bell"></i> Notifications</a></li>
+                <li><a href="settings.html"><i class="fa-solid fa-gear"></i> Settings</a></li>
+            </ul>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="#" data-action="logout"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+        </div>
+    </aside>
+
+    <div class="main-content">
+
+        <header class="header">
+            <h2>Blood Stock Management</h2>
+            <div class="header-actions">
+                <div class="search-bar">
+                    <input type="text" placeholder="Search inventory...">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </div>
+                <div class="admin-profile">
+                    <span id="headerUserName">A. Hameed</span>
+                    <i class="fa-solid fa-chevron-down"></i>
+                </div>
+            </div>
+        </header>
+
+        <main class="stock-main">
+
+            <section class="page-header">
+                <h2>Current Inventory</h2>
+                <div style="display: flex; gap: 10px;">
+                    <button id="btnAddStock" class="btn-primary-shine" style="background: var(--primary-red);">
+                        <i class="fa-solid fa-plus"></i> Add Stock
+                    </button>
+                    <button id="btnExportStock" class="btn-primary-shine">
+                        <i class="fa-solid fa-file-export"></i> Export Report
+                    </button>
+                </div>
+            </section>
+
+            <section class="blood-grid">
+                <!-- Grid content will be loaded by JS -->
+            </section>
+
+            <section class="widget">
+                <div class="widget-header">
+                    <h3>Detailed Stock Logs</h3>
+                    <button id="btnUpdateStock" class="btn-primary-shine" style="padding: 8px 16px; font-size: 0.9rem;">
+                        <i class="fa-solid fa-sync"></i> Update Levels
+                    </button>
+                </div>
+
+                <div class="table-container">
+                    <div class="table-header">
+                        <div>Blood Group</div>
+                        <div>Hospital</div>
+                        <div>Units Available</div>
+                        <div>Last Updated</div>
+                        <div>Actions</div>
+                    </div>
+
+                    <div class="table-body">
+                        <div class="table-row">
+                            <div><span class="blood-badge">A+</span></div>
+                            <div>Jinnah Hospital</div>
+                            <div>80</div>
+                            <div>2 mins ago</div>
+                            <div>
+                                <button class="btn-action"><i class="fa-solid fa-pen"></i></button>
+                                <button class="btn-action"><i class="fa-solid fa-trash"></i></button>
+                            </div>
+                        </div>
+                        <div class="table-row">
+                            <div><span class="blood-badge">O-</span></div>
+                            <div>Services Hospital</div>
+                            <div style="color: #FF5252; font-weight:bold;">5 (Critical)</div>
+                            <div>1 hour ago</div>
+                            <div>
+                                <button class="btn-action"><i class="fa-solid fa-pen"></i></button>
+                                <button class="btn-action"><i class="fa-solid fa-trash"></i></button>
+                            </div>
+                        </div>
+                        <div class="table-row">
+                            <div><span class="blood-badge">B+</span></div>
+                            <div>General Hospital</div>
+                            <div>45</div>
+                            <div>Yesterday</div>
+                            <div>
+                                <button class="btn-action"><i class="fa-solid fa-pen"></i></button>
+                                <button class="btn-action"><i class="fa-solid fa-trash"></i></button>
+                            </div>
+                        </div>
+                        <div class="table-row">
+                            <div><span class="blood-badge">AB+</span></div>
+                            <div>Mayo Hospital</div>
+                            <div>60</div>
+                            <div>3 hours ago</div>
+                            <div>
+                                <button class="btn-action"><i class="fa-solid fa-pen"></i></button>
+                                <button class="btn-action"><i class="fa-solid fa-trash"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- API Configuration -->
+    <script src="../../config/api-config.js"></script>
+
+    <!-- Main Integration Script -->
+    <script src="../../js/main.js"></script>
+
+    <!-- Blood Stock Integration Script -->
+    <script src="../../js/bloodstock.js"></script>
+
+</body>
+
+</html>

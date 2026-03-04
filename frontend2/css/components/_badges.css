@@ -1,0 +1,165 @@
+/**
+ * Bloodify Badge Component
+ * ========================
+ * Status badges and tags.
+ */
+
+/* ========== BASE BADGE ========== */
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: 6px 12px;
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    border-radius: var(--radius-full);
+    white-space: nowrap;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* ========== BADGE VARIANTS ========== */
+.badge--primary {
+    background: rgba(var(--color-primary-rgb), 0.15);
+    color: var(--color-primary);
+}
+
+.badge--success {
+    background: rgba(22, 163, 74, 0.15);
+    color: var(--color-success);
+}
+
+.badge--warning {
+    background: rgba(245, 158, 11, 0.15);
+    color: var(--color-warning);
+}
+
+.badge--danger {
+    background: rgba(239, 68, 68, 0.15);
+    color: var(--color-danger);
+}
+
+.badge--info {
+    background: rgba(59, 130, 246, 0.15);
+    color: var(--color-info);
+}
+
+.badge--neutral {
+    background: rgba(148, 163, 184, 0.15);
+    color: var(--text-secondary);
+}
+
+/* Solid variants */
+.badge--primary-solid {
+    background: var(--color-primary);
+    color: var(--text-light);
+}
+
+.badge--success-solid {
+    background: var(--color-success);
+    color: var(--text-light);
+}
+
+.badge--warning-solid {
+    background: var(--color-warning);
+    color: var(--text-dark);
+}
+
+.badge--danger-solid {
+    background: var(--color-danger);
+    color: var(--text-light);
+}
+
+.badge--info-solid {
+    background: var(--color-info);
+    color: var(--text-light);
+}
+
+/* ========== BADGE SIZES ========== */
+.badge--sm {
+    padding: 4px 8px;
+    font-size: 10px;
+}
+
+.badge--lg {
+    padding: 8px 16px;
+    font-size: var(--font-size-sm);
+}
+
+/* ========== BADGE WITH DOT ========== */
+.badge--dot {
+    padding-left: 8px;
+}
+
+.badge--dot::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: var(--radius-full);
+    background: currentColor;
+}
+
+/* ========== STATUS BADGES ========== */
+/* Pre-defined status badges for common use cases */
+
+.status {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: 6px 12px;
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    border-radius: var(--radius-full);
+    white-space: nowrap;
+}
+
+.status--active,
+.status--approved,
+.status--completed,
+.status--available {
+    background: rgba(22, 163, 74, 0.15);
+    color: var(--color-success);
+}
+
+.status--pending,
+.status--processing {
+    background: rgba(245, 158, 11, 0.15);
+    color: var(--color-warning);
+}
+
+.status--inactive,
+.status--rejected,
+.status--cancelled,
+.status--expired,
+.status--low,
+.status--out-of-stock {
+    background: rgba(239, 68, 68, 0.15);
+    color: var(--color-danger);
+}
+
+.status--draft,
+.status--unknown {
+    background: rgba(148, 163, 184, 0.15);
+    color: var(--text-secondary);
+}
+
+/* ========== BLOOD GROUP BADGE ========== */
+.blood-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 48px;
+    height: 32px;
+    padding: 0 12px;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    background: var(--color-primary);
+    color: var(--text-light);
+    border-radius: var(--radius-sm);
+}
+
+.blood-badge--lg {
+    min-width: 64px;
+    height: 40px;
+    font-size: var(--font-size-lg);
+}

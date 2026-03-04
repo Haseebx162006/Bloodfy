@@ -1,0 +1,24 @@
+/**
+ * Bloodify Public Styles Bundle
+ * =============================
+ * Single import file for public page styles (login, landing).
+ * 
+ * Usage in HTML:
+ * <link rel="stylesheet" href="css/public.css">
+ */
+
+/* ========== BASE ========== */
+@import 'base/_variables.css';
+@import 'base/_reset.css';
+@import 'base/_typography.css';
+@import 'base/_utilities.css';
+
+/* ========== COMPONENTS ========== */
+@import 'components/_buttons.css';
+@import 'components/_cards.css';
+@import 'components/_forms.css';
+@import 'components/_modals.css';
+@import 'components/_badges.css';
+
+/* ========== LAYOUTS ========== */
+@import 'layouts/_auth-layout.css';

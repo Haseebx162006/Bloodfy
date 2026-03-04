@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bloodfy - AI Analytics</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        /* Copied Global Vars */
+
+        :root {
+            --primary-red: #E53935;
+            --bg-dark-primary: #181A1E;
+            --bg-dark-secondary: #1F2229;
+            --text-primary: #F1F5F9;
+            --text-secondary: #94A3B8;
+            --border-color: #333944;
+            --sidebar-width: 260px;
+            --font-family: 'Poppins', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: var(--font-family);
+        }
+
+        body {
+            display: flex;
+            background-color: var(--bg-dark-primary);
+            color: var(--text-primary);
+        }
+
+        .sidebar {
+            width: var(--sidebar-width);
+            height: 100vh;
+            background: rgba(31, 34, 41, 0.95);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            position: sticky;
+            top: 0;
+        }
+
+        .sidebar-nav ul li a {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 16px 30px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        .sidebar-nav ul li a:hover,
+        .sidebar-nav ul li.active a {
+            background: var(--primary-red);
+            color: white;
+        }
+
+        .main-content {
+            flex-grow: 1;
+            padding: 40px;
+        }
+
+        /* Analytics Grids */
+
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        .chart-card {
+            background: var(--bg-dark-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 25px;
+        }
+
+        /* CSS Bar Chart */
+
+        .bar-chart {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-around;
+            height: 200px;
+            padding-top: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .bar {
+            width: 30px;
+            background: var(--primary-red);
+            border-radius: 5px 5px 0 0;
+            position: relative;
+            transition: height 1s;
+            cursor: pointer;
+        }
+
+        .bar:hover {
+            opacity: 0.8;
+            box-shadow: 0 0 15px rgba(229, 57, 53, 0.5);
+        }
+
+        .bar span {
+            position: absolute;
+            bottom: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        /* Circle Stats */
+
+        .stats-row {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-circle {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 6px solid var(--primary-red);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 0 auto 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .stat-circle.blue {
+            border-color: #2962FF;
+            box-shadow: 0 0 15px rgba(41, 98, 255, 0.3);
+        }
+
+        .stat-circle.green {
+            border-color: #00C853;
+            box-shadow: 0 0 15px rgba(0, 200, 83, 0.3);
+        }
+    </style>
+</head>
+
+<body>
+
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <!-- Logo removed as per user request -->
+        </div>
+        <nav class="sidebar-nav">
+            <ul>
+                <li><a href="dashboard.html"><i class="fa-solid fa-table-columns"></i> Dashboard</a></li>
+                <li><a href="donor.html"><i class="fa-solid fa-users"></i> Donors</a></li>
+                <li><a href="patient.html"><i class="fa-solid fa-procedures"></i> Blood Requests</a></li>
+                <li><a href="bloodstock.html"><i class="fa-solid fa-vials"></i> Blood Stock</a></li>
+                <li><a href="staff.html"><i class="fa-solid fa-user-tie"></i> Staff</a></li>
+                <li class="active"><a href="analytics.html"><i class="fa-solid fa-chart-line"></i> Analytics</a></li>
+                <li><a href="emergency.html"><i class="fa-solid fa-bolt"></i> Emergency</a></li>
+                <li><a href="chatbot.html"><i class="fa-solid fa-robot"></i> Chatbot</a></li>
+                <li><a href="notifications.html"><i class="fa-solid fa-bell"></i> Notifications</a></li>
+                <li><a href="settings.html"><i class="fa-solid fa-gear"></i> Settings</a></li>
+            </ul>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="#" data-action="logout"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+        </div>
+    </aside>
+
+    <div class="main-content">
+        <header class="header">
+            <h2>AI Insights & Performance</h2>
+            <div class="header-actions">
+                <div class="search-bar">
+                    <input type="text" placeholder="Search analytics...">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </div>
+                <div class="admin-profile">
+                    <span>Admin</span>
+                </div>
+            </div>
+        </header>
+
+        <main class="analytics-main">
+
+            <div class="analytics-grid">
+
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>Monthly Requests Fulfilled</h3>
+                    </div>
+                    <div class="bar-chart">
+                        <div class="bar" style="height: 40%;"><span>Jan</span></div>
+                        <div class="bar" style="height: 60%;"><span>Feb</span></div>
+                        <div class="bar" style="height: 45%;"><span>Mar</span></div>
+                        <div class="bar" style="height: 80%;"><span>Apr</span></div>
+                        <div class="bar" style="height: 95%;"><span>May</span></div>
+                        <div class="bar" style="height: 70%;"><span>Jun</span></div>
+                    </div>
+                </div>
+
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>Predictive Model Metrics</h3>
+                    </div>
+                    <p style="color: var(--text-secondary);">Real-time analysis of donor responsiveness.</p>
+
+                    <div class="stats-row">
+                        <div class="stat-item">
+                            <div class="stat-circle">92%</div>
+                            <span>Accuracy</span>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-circle blue">12m</div>
+                            <span>Avg Time</span>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-circle green">300+</div>
+                            <span>Matched</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+    </div>
+
+    <!-- API Configuration -->
+    <script src="../../config/api-config.js"></script>
+
+    <!-- Main Integration Script -->
+    <script src="../../js/main.js"></script>
+
+    <!-- Analytics Integration Script -->
+    <script src="../../js/analytics.js"></script>
+
+</body>
+
+</html>

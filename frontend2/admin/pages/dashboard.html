@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bloodfy Admin Dashboard</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        /* --- Global Setup & CSS Variables --- */
+
+        :root {
+            --primary-red: #E53935;
+            --primary-red-dark: #C62828;
+            --bg-dark-primary: #181A1E;
+            --bg-dark-secondary: #1F2229;
+            --text-primary: #F1F5F9;
+            --text-secondary: #94A3B8;
+            --border-color: #333944;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            --font-family: 'Poppins', sans-serif;
+            --sidebar-width: 260px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: var(--font-family);
+        }
+
+        body {
+            display: flex;
+            background-color: var(--bg-dark-primary);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        body.loaded {
+            opacity: 1;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 10px;
+        }
+
+        /* --- Sidebar Styling --- */
+
+        .sidebar {
+            width: var(--sidebar-width);
+            height: 100vh;
+            background: rgba(31, 34, 41, 0.8);
+            backdrop-filter: blur(10px);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            position: sticky;
+            top: 0;
+            transition: width 0.3s ease;
+        }
+
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            gap: 15px;
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--primary-red);
+        }
+
+        .sidebar-header i {
+            font-size: 2rem;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-header:hover i {
+            transform: scale(1.1);
+        }
+
+        .sidebar-nav {
+            flex-grow: 1;
+            padding: 15px 0;
+        }
+
+        .sidebar-nav ul li a {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-weight: 500;
+            font-size: 1rem;
+            padding: 16px 30px;
+            margin: 6px 15px;
+            border-radius: 10px;
+            color: var(--text-secondary);
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-nav ul li a i {
+            font-size: 1.2rem;
+            width: 24px;
+            text-align: center;
+        }
+
+        .sidebar-nav ul li a:hover {
+            background-color: var(--primary-red);
+            color: var(--text-primary);
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(229, 57, 53, 0.3);
+        }
+
+        .sidebar-nav ul li.active a {
+            background-color: var(--primary-red);
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .sidebar-footer {
+            padding: 20px;
+            margin-top: auto;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .sidebar-footer a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #FF6B6B;
+            background: rgba(229, 57, 53, 0.2);
+            border: 2px solid rgba(229, 57, 53, 0.5);
+            padding: 14px 20px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-footer a:hover {
+            color: white;
+            background: var(--primary-red);
+            border-color: var(--primary-red);
+            transform: scale(1.02);
+        }
+
+        /* --- Main Content Styling --- */
+
+        .main-content {
+            flex-grow: 1;
+            width: calc(100% - var(--sidebar-width));
+        }
+
+        /* --- Header Styling --- */
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px 40px;
+            background: rgba(24, 26, 30, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header h2 {
+            font-weight: 600;
+            font-size: 1.5rem;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .search-bar {
+            position: relative;
+        }
+
+        .search-bar input {
+            width: 350px;
+            padding: 12px 20px 12px 45px;
+            border: 1px solid var(--border-color);
+            border-radius: 25px;
+            background-color: var(--bg-dark-secondary);
+            color: var(--text-primary);
+            font-family: var(--font-family);
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .search-bar input:focus {
+            outline: none;
+            border-color: var(--primary-red);
+            box-shadow: 0 0 0 3px rgba(229, 57, 53, 0.3);
+        }
+
+        .search-bar i {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+        }
+
+        .admin-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+        }
+
+        .admin-profile img {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--border-color);
+        }
+
+        .admin-profile span {
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .admin-avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: var(--primary-red);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1rem;
+            color: white;
+            border: 2px solid var(--border-color);
+        }
+
+        .header-logout-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: rgba(229, 57, 53, 0.2);
+            border: 2px solid var(--primary-red);
+            border-radius: 25px;
+            color: var(--primary-red);
+            font-family: var(--font-family);
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .header-logout-btn:hover {
+            background: var(--primary-red);
+            color: white;
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(229, 57, 53, 0.4);
+        }
+
+        /* --- Main Dashboard --- */
+
+        .dashboard-main {
+            padding: 40px;
+        }
+
+        /* --- Stats Cards Grid --- */
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr) 1.5fr;
+            gap: 25px;
+        }
+
+        .card {
+            background: var(--bg-dark-secondary);
+            padding: 25px;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-icon {
+            font-size: 1.8rem;
+            padding: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card:nth-child(1) .card-icon {
+            background: #2962FF30;
+            color: #2962FF;
+        }
+
+        .card:nth-child(2) .card-icon {
+            background: #FFAB0030;
+            color: #FFAB00;
+        }
+
+        .card:nth-child(3) .card-icon {
+            background: #00C85330;
+            color: #00C853;
+        }
+
+        .card-info h3 {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .card-info span {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+        }
+
+        /* --- THE "WOW" FACTOR: AI Radial Chart Card --- */
+
+        .card-ai {
+            grid-column: 4 / 5;
+            grid-row: 1 / 2;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            background: linear-gradient(145deg, var(--primary-red-dark), var(--primary-red));
+        }
+
+        .card-ai h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .ai-chart-container {
+            width: 130px;
+            height: 130px;
+            position: relative;
+        }
+
+        .ai-chart-percent {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.25rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            background: var(--primary-red-dark);
+            z-index: 5;
+        }
+
+        .ai-chart-radial {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            border-radius: 50%;
+            --p: 0;
+            --b: 12px;
+            --c: var(--text-primary);
+            --bg: rgba(0, 0, 0, 0.2);
+            background: radial-gradient(closest-side, transparent 79%, var(--bg) 80% 99%, transparent 100%), conic-gradient(var(--c) calc(var(--p) * 1%), var(--bg) 0);
+            transition: --p 1s ease-out;
+        }
+
+        /* --- Data Widgets Grid --- */
+
+        .data-widgets {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .widget {
+            background: var(--bg-dark-secondary);
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow);
+            padding: 30px;
+        }
+
+        .widget-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .widget-header h3 {
+            font-weight: 600;
+            font-size: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--text-primary);
+        }
+
+        .widget-header h3 i {
+            color: var(--primary-red);
+        }
+
+        .btn-secondary {
+            padding: 10px 18px;
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            background: transparent;
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--primary-red);
+            border-color: var(--primary-red);
+            color: var(--text-primary);
+        }
+
+        /* AI Donors List */
+
+        .widget-ai-donors p {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .donor-list li {
+            display: flex;
+            align-items: center;
+            padding: 18px 10px;
+            border-radius: 10px;
+            border-bottom: 1px solid var(--border-color);
+            transition: background-color 0.3s ease;
+        }
+
+        .donor-list li:last-child {
+            border-bottom: none;
+        }
+
+        .donor-list li:hover {
+            background-color: rgba(255, 255, 255, 0.03);
+        }
+
+        .donor-list li span:first-child {
+            font-weight: 600;
+            flex-grow: 1;
+            color: var(--text-primary);
+        }
+
+        .donor-list .location {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-right: 25px;
+        }
+
+        .donor-list .location i {
+            color: var(--primary-red);
+            margin-right: 5px;
+        }
+
+        .donor-list .responsiveness {
+            font-weight: 600;
+            margin-right: 25px;
+            font-size: 0.9rem;
+        }
+
+        .responsiveness.high {
+            color: #00C853;
+        }
+
+        .responsiveness.med {
+            color: #FFAB00;
+        }
+
+        .responsiveness.low {
+            color: #FF5252;
+        }
+
+        .btn-contact {
+            font-size: 1rem;
+            padding: 10px 12px;
+            border-radius: 50%;
+            background: var(--bg-dark-primary);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .btn-contact:hover {
+            background-color: var(--primary-red);
+            color: var(--text-primary);
+            border-color: var(--primary-red);
+        }
+
+        /* Inventory List */
+
+        .inventory-list li {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 22px;
+        }
+
+        .inventory-list li span:first-child {
+            font-weight: 700;
+            font-size: 1.1rem;
+            width: 45px;
+            color: var(--text-primary);
+        }
+
+        .inventory-list .bar {
+            flex-grow: 1;
+            height: 10px;
+            background-color: var(--bg-dark-primary);
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+
+        .inventory-list .bar-fill {
+            height: 100%;
+            background-image: linear-gradient(90deg, #00C853, #69F0AE);
+            border-radius: 10px;
+            transition: width 1s ease-out;
+        }
+
+        /* Critical Red Bar */
+
+        .inventory-list .bar-fill.critical {
+            background-image: linear-gradient(90deg, var(--primary-red-dark), var(--primary-red));
+        }
+
+        .inventory-list span:last-child {
+            font-weight: 600;
+            font-size: 0.95rem;
+            width: 35px;
+            color: var(--text-primary);
+        }
+
+        .inventory-list span.critical {
+            color: var(--primary-red);
+        }
+
+        /* Loading States */
+        .loading-placeholder {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            color: var(--text-secondary);
+        }
+
+        .loading-placeholder i {
+            font-size: 1.5rem;
+            margin-right: 10px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-secondary);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+
+        .empty-state p {
+            font-size: 0.95rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <!-- Logo removed as per user request -->
+        </div>
+
+        <nav class="sidebar-nav">
+            <ul>
+                <li class="active"><a href="dashboard.html"><i class="fa-solid fa-table-columns"></i> Dashboard</a></li>
+                <li><a href="donor.html"><i class="fa-solid fa-users"></i> Donors</a></li>
+                <li><a href="patient.html"><i class="fa-solid fa-procedures"></i> Blood Requests</a></li>
+                <li><a href="bloodstock.html"><i class="fa-solid fa-vials"></i> Blood Stock</a></li>
+                <li><a href="staff.html"><i class="fa-solid fa-user-tie"></i> Staff</a></li>
+                <li><a href="analytics.html"><i class="fa-solid fa-chart-line"></i> Analytics</a></li>
+                <li><a href="emergency.html"><i class="fa-solid fa-bolt"></i> Emergency</a></li>
+                <li><a href="chatbot.html"><i class="fa-solid fa-robot"></i> Chatbot</a></li>
+                <li><a href="notifications.html"><i class="fa-solid fa-bell"></i> Notifications</a></li>
+                <li><a href="settings.html"><i class="fa-solid fa-gear"></i> Settings</a></li>
+            </ul>
+        </nav>
+
+        <div class="sidebar-footer">
+            <a href="#" data-action="logout"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+        </div>
+    </aside>
+
+    <div class="main-content">
+
+        <header class="header">
+            <h2>Welcome, <span id="adminNameDisplay">Admin</span>!</h2>
+            <div class="header-actions">
+                <div class="search-bar">
+                    <input type="text" id="globalSearch" placeholder="Search donors, patients...">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </div>
+                <div class="admin-profile">
+                    <span id="adminProfileName">Admin</span>
+                </div>
+                <button class="header-logout-btn" data-action="logout">
+                    <i class="fa-solid fa-right-from-bracket"></i> Logout
+                </button>
+            </div>
+        </header>
+
+        <main class="dashboard-main">
+
+            <section class="stats-grid">
+                <div class="card" id="cardActiveDonors">
+                    <div class="card-icon"><i class="fa-solid fa-users"></i></div>
+                    <div class="card-info">
+                        <h3 id="statActiveDonors"><i class="fa-solid fa-spinner fa-spin"></i></h3>
+                        <span>Active Donors</span>
+                    </div>
+                </div>
+                <div class="card" id="cardPendingDonorRequests">
+                    <div class="card-icon" style="background: rgba(255, 152, 0, 0.2); color: var(--warning-yellow);"><i
+                            class="fa-solid fa-user-clock"></i></div>
+                    <div class="card-info">
+                        <h3 id="statPendingDonorRequests"><i class="fa-solid fa-spinner fa-spin"></i></h3>
+                        <span>Donor Requests</span>
+                    </div>
+                </div>
+                <div class="card" id="cardPendingRequests">
+                    <div class="card-icon"><i class="fa-solid fa-clock"></i></div>
+                    <div class="card-info">
+                        <h3 id="statPendingRequests"><i class="fa-solid fa-spinner fa-spin"></i></h3>
+                        <span>Blood Requests</span>
+                    </div>
+                </div>
+                <div class="card" id="cardInventory">
+                    <div class="card-icon"><i class="fa-solid fa-vial"></i></div>
+                    <div class="card-info">
+                        <h3 id="statInventoryPercentage"><i class="fa-solid fa-spinner fa-spin"></i></h3>
+                        <span>Inventory Full</span>
+                    </div>
+                </div>
+
+                <div class="card card-ai" id="cardAIAccuracy">
+                    <h3>AI Model Accuracy</h3>
+                    <div class="ai-chart-container">
+                        <div class="ai-chart-radial" id="aiChartRadial"></div>
+                        <div class="ai-chart-percent" id="statAIAccuracy"><i class="fa-solid fa-spinner fa-spin"
+                                style="font-size: 1.5rem;"></i></div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="data-widgets">
+
+                <div class="widget widget-ai-donors">
+                    <div class="widget-header">
+                        <h3><i class="fa-solid fa-star"></i> AI-Predicted Donors (High Priority)</h3>
+                        <button class="btn-secondary" id="btnSendBulkSMS">Send SMS <i
+                                class="fa-solid fa-paper-plane"></i></button>
+                    </div>
+                    <p id="donorListDescription">Loading AI predictions for high-priority blood requests...</p>
+                    <ul class="donor-list" id="donorListContainer">
+                        <li class="loading-placeholder">
+                            <i class="fa-solid fa-spinner fa-spin"></i> Loading donor predictions...
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="widget widget-inventory">
+                    <div class="widget-header">
+                        <h3><i class="fa-solid fa-chart-pie"></i> Current Inventory</h3>
+                        <a href="bloodstock.html" class="btn-secondary">View All</a>
+                    </div>
+                    <ul class="inventory-list" id="inventoryListContainer">
+                        <li class="loading-placeholder">
+                            <i class="fa-solid fa-spinner fa-spin"></i> Loading inventory...
+                        </li>
+                    </ul>
+                </div>
+
+            </section>
+
+        </main>
+    </div>
+
+    <!-- API Configuration -->
+    <script src="../../config/api-config.js"></script>
+
+    <!-- Main Integration Script -->
+    <script src="../../js/main.js"></script>
+
+    <!-- Dashboard Integration Script -->
+    <script src="../../js/dashboard.js"></script>
+
+</body>
+
+</html>
