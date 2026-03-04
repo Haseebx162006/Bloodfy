@@ -122,6 +122,8 @@ window.showAddUserModal = function () {
                     <button class="modal-close" onclick="closeAddUserModal()">&times;</button>
                 </div>
                 <div class="modal-body">
+                    <div id="addUserError" style="display:none; background:rgba(244,67,54,0.1); border:1px solid #F44336; color:#F44336; padding:12px; border-radius:8px; margin-bottom:15px; font-size:14px;"></div>
+                    <div id="addUserSuccess" style="display:none; background:rgba(76,175,80,0.1); border:1px solid #4CAF50; color:#4CAF50; padding:12px; border-radius:8px; margin-bottom:15px; font-size:14px;"></div>
                     <form id="addUserForm">
                         <div class="form-row">
                             <div class="form-group">
@@ -143,10 +145,8 @@ window.showAddUserModal = function () {
                             <div class="form-group">
                                 <label>User Type *</label>
                                 <select name="user_type" class="form-input" required>
-                                    <option value="staff">Staff</option>
+                                    <option value="user">User</option>
                                     <option value="admin">Admin</option>
-                                    <option value="donor">Donor</option>
-                                    <option value="patient">Patient</option>
                                 </select>
                             </div>
                             <div class="form-group">
@@ -167,7 +167,7 @@ window.showAddUserModal = function () {
                         
                         <div class="form-actions">
                             <button type="button" class="btn-secondary" onclick="closeAddUserModal()">Cancel</button>
-                            <button type="submit" class="btn-primary">Create User</button>
+                            <button type="submit" id="addUserSubmitBtn" class="btn-primary">Create User</button>
                         </div>
                     </form>
                 </div>
@@ -177,10 +177,18 @@ window.showAddUserModal = function () {
 
         // Setup form submission
         const form = document.getElementById('addUserForm');
-        form.onsubmit = async (e) => {
+        form.addEventListener('submit', async (e) => {
             e.preventDefault();
-            await handleAddUser(new FormData(form));
-        };
+            await handleAddUser(form);
+        });
+    } else {
+        // Reset error/success banners when re-opening
+        const errDiv = document.getElementById('addUserError');
+        const okDiv = document.getElementById('addUserSuccess');
+        const form = document.getElementById('addUserForm');
+        if (errDiv) errDiv.style.display = 'none';
+        if (okDiv) okDiv.style.display = 'none';
+        if (form) form.reset();
     }
 
     modal.style.display = 'flex';
@@ -191,34 +199,66 @@ window.closeAddUserModal = function () {
     if (modal) modal.style.display = 'none';
 };
 
-async function handleAddUser(formData) {
+async function handleAddUser(form) {
+    const formData = new FormData(form);
     const userData = Object.fromEntries(formData.entries());
 
+    const errDiv = document.getElementById('addUserError');
+    const okDiv = document.getElementById('addUserSuccess');
+    const submitBtn = document.getElementById('addUserSubmitBtn');
+
+    function showModalError(msg) {
+        if (errDiv) { errDiv.style.display = 'block'; errDiv.textContent = msg; }
+        if (okDiv) okDiv.style.display = 'none';
+    }
+    function showModalSuccess(msg) {
+        if (okDiv) { okDiv.style.display = 'block'; okDiv.textContent = msg; }
+        if (errDiv) errDiv.style.display = 'none';
+    }
+
     if (userData.password !== userData.password_confirm) {
-        showError('Passwords do not match');
+        showModalError('Passwords do not match');
         return;
     }
 
+    if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Creating...'; }
+
     try {
-        // Admin user creation via UserListView.post
-        const response = await API.users.getList({ method: 'POST', body: userData });
-
-        // Wait, I need a specific create method in API.users or pass method/body
-        // Let's refine the method call
-
-        const result = await apiRequest('/users/', {
+        const token = getAuthToken();
+        const response = await fetch(`${API_CONFIG.BASE_URL}/users/`, {
             method: 'POST',
-            body: userData
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token,
+            },
+            body: JSON.stringify(userData),
         });
 
+        const result = await response.json();
+        console.log('Create user response:', result);
+
         if (result.success) {
-            showSuccess('User created successfully');
-            closeAddUserModal();
-            await loadStaffList();
+            showModalSuccess('User created successfully!');
+            form.reset();
+            setTimeout(async () => {
+                closeAddUserModal();
+                await loadStaffList();
+            }, 1200);
+        } else {
+            // Show field-level errors if present
+            let errMsg = result.message || 'Failed to create user';
+            if (result.errors && typeof result.errors === 'object') {
+                errMsg = Object.entries(result.errors)
+                    .map(([f, msgs]) => `${f}: ${Array.isArray(msgs) ? msgs.join(', ') : msgs}`)
+                    .join(' | ');
+            }
+            showModalError(errMsg);
         }
     } catch (error) {
         console.error('Error creating user:', error);
-        showError(error.message || 'Failed to create user');
+        showModalError(error.message || 'Network error – check server is running');
+    } finally {
+        if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Create User'; }
     }
 }
 
@@ -268,10 +308,8 @@ function showEditUserModal(user) {
                         <div class="form-group">
                             <label>User Type</label>
                             <select name="user_type" class="form-input">
-                                <option value="staff">Staff</option>
+                                <option value="user">User</option>
                                 <option value="admin">Admin</option>
-                                <option value="donor">Donor</option>
-                                <option value="patient">Patient</option>
                             </select>
                         </div>
                         

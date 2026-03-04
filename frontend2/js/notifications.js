@@ -240,7 +240,7 @@ async function loadDonorsForNotification() {
         const result = await API.donors.getList({ is_eligible: true });
 
         if (result.success && result.data) {
-            const donors = Array.isArray(result.data) ? result.data : result.data.results || [];
+            const donors = Array.isArray(result.data) ? result.data : result.data.donors || [];
             const select = document.getElementById('donorIdSelect');
 
             if (select && donors.length > 0) {

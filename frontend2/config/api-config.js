@@ -524,6 +524,13 @@ const API = {
             });
         },
 
+        async createUser(userData) {
+            return await apiRequest(API_ENDPOINTS.USERS.LIST, {
+                method: 'POST',
+                body: userData,
+            });
+        },
+
         async deleteUser(userId) {
             return await apiRequest(API_ENDPOINTS.USERS.DETAIL(userId), {
                 method: 'DELETE',

@@ -85,7 +85,7 @@ async function loadDashboardStats() {
         if (requestsData.success && requestsData.data) {
             pendingCount = Array.isArray(requestsData.data)
                 ? requestsData.data.length
-                : requestsData.data.results?.length || requestsData.data.count || 0;
+                : requestsData.data.blood_requests?.length || requestsData.data.count || 0;
         }
         updateStatCard('statPendingRequests', pendingCount);
 
@@ -93,7 +93,7 @@ async function loadDashboardStats() {
         try {
             const donorRequestsData = await API.donors.getPendingRequests();
             if (donorRequestsData.success && donorRequestsData.data) {
-                const pendingDonors = donorRequestsData.data.requests ? donorRequestsData.data.requests.length : (donorRequestsData.data.count || 0);
+                const pendingDonors = donorRequestsData.data.pending_requests ? donorRequestsData.data.pending_requests.length : (donorRequestsData.data.count || 0);
                 updateStatCard('statPendingDonorRequests', pendingDonors);
             }
         } catch (error) {
@@ -190,7 +190,7 @@ async function loadPredictedDonors() {
         if (requestsData.success && requestsData.data) {
             const requests = Array.isArray(requestsData.data)
                 ? requestsData.data
-                : requestsData.data.results || [];
+                : requestsData.data.blood_requests || [];
 
             if (requests.length > 0) {
                 bloodGroupNeeded = requests[0].blood_group_required || requests[0].blood_group || 'O-';
